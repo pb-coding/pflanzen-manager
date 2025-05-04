@@ -20,12 +20,14 @@ const RoomDetail: React.FC = () => {
   const saveSettings = useStore(state => state.saveSettings);
   const addImage = useStore(state => state.addImage);
 
-  const [name, setName] = useState('');
-  const [windowDistanceCm, setWindowDistanceCm] = useState<number | ''>('');
-  const [nearHeater, setNearHeater] = useState(false);
-  const [sizeCm, setSizeCm] = useState<number | ''>('');
-  const [potSizeCm, setPotSizeCm] = useState<number | ''>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Dialog state for new plant creation
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [dialogName, setDialogName] = useState('');
+  const [dialogWindowDistanceCm, setDialogWindowDistanceCm] = useState<number | ''>('');
+  const [dialogNearHeater, setDialogNearHeater] = useState(false);
+  const [dialogSizeCm, setDialogSizeCm] = useState<number | ''>('');
+  const [dialogPotSizeCm, setDialogPotSizeCm] = useState<number | ''>('');
+  const [dialogDataUrl, setDialogDataUrl] = useState<string>('');
 
   useEffect(() => {
     // Load user settings (e.g., stored OpenAI API key) and data on mount
@@ -75,15 +77,14 @@ const RoomDetail: React.FC = () => {
       try {
         // Recognize plant name via GPT-4o
         const recognized = await recognizePlantName(dataUrl, apiKey!);
-        // Allow user to confirm or correct
-        const plantName = window.prompt(
-          'Pflanzenname bestätigen oder korrigieren:',
-          recognized
-        );
-        if (!plantName || !plantName.trim()) return;
-        // Create plant and image
-        const plantId = await addPlant({ roomId: room.id, name: plantName.trim() });
-        await addImage({ plantId, timestamp: Date.now(), dataURL: dataUrl });
+        // Open dialog prefilled with recognized name and image
+        setDialogDataUrl(dataUrl);
+        setDialogName(recognized);
+        setDialogWindowDistanceCm('');
+        setDialogNearHeater(false);
+        setDialogSizeCm('');
+        setDialogPotSizeCm('');
+        dialogRef.current?.showModal();
       } catch (err) {
         console.error('Fehler bei KI-Erkennung:', err);
         alert('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
@@ -92,24 +93,20 @@ const RoomDetail: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  // Handle dialog form submission
+  const handleDialogSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    setIsSubmitting(true);
-    try {
-      await addPlant({
-        roomId: room.id,
-        name: name.trim(),
-        windowDistanceCm: windowDistanceCm === '' ? undefined : windowDistanceCm,
-        nearHeater,
-        sizeCm: sizeCm === '' ? undefined : sizeCm,
-        potSizeCm: potSizeCm === '' ? undefined : potSizeCm,
-      });
-      setName(''); setWindowDistanceCm(''); setNearHeater(false);
-      setSizeCm(''); setPotSizeCm('');
-    } finally {
-      setIsSubmitting(false);
-    }
+    if (!dialogName.trim()) return;
+    const plantId = await addPlant({
+      roomId: room.id,
+      name: dialogName.trim(),
+      windowDistanceCm: dialogWindowDistanceCm === '' ? undefined : dialogWindowDistanceCm,
+      nearHeater: dialogNearHeater,
+      sizeCm: dialogSizeCm === '' ? undefined : dialogSizeCm,
+      potSizeCm: dialogPotSizeCm === '' ? undefined : dialogPotSizeCm,
+    });
+    await addImage({ plantId, timestamp: Date.now(), dataURL: dialogDataUrl });
+    dialogRef.current?.close();
   };
 
   const getProfileImage = (plantId: string): string | undefined => {
@@ -126,66 +123,7 @@ const RoomDetail: React.FC = () => {
     <div className="p-6">
       <Link to="/" className="text-blue-600 hover:underline">&larr; Zurück</Link>
       <h1 className="text-3xl font-bold mt-2 mb-4">{room.name}</h1>
-      <form onSubmit={handleSubmit} className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            type="text"
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Neue Pflanze"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Abstand (cm)</label>
-          <input
-            type="number"
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={windowDistanceCm}
-            onChange={e => setWindowDistanceCm(e.target.value === '' ? '' : Number(e.target.value))}
-            placeholder="z.B. 50"
-          />
-        </div>
-        <div className="flex items-center mt-6 space-x-2">
-          <input
-            type="checkbox"
-            checked={nearHeater}
-            onChange={e => setNearHeater(e.target.checked)}
-            className="h-4 w-4"
-          />
-          <label className="text-sm font-medium text-gray-700">Nahe Heizung</label>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Größe (cm)</label>
-          <input
-            type="number"
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={sizeCm}
-            onChange={e => setSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-            placeholder="z.B. 30"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Topf Ø (cm)</label>
-          <input
-            type="number"
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={potSizeCm}
-            onChange={e => setPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-            placeholder="z.B. 15"
-          />
-        </div>
-        <div className="flex items-end">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-          >
-            {isSubmitting ? 'Erstellen...' : 'Neue Pflanze'}
-          </button>
-        </div>
-      </form>
+      {/* Plant creation handled via floating button and dialog */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {roomPlants.map(plant => (
           <Link
@@ -213,6 +151,73 @@ const RoomDetail: React.FC = () => {
           </Link>
         ))}
       </div>
+      {/* Dialog for new plant creation */}
+      <dialog ref={dialogRef} className="p-6 bg-white rounded shadow-lg">
+        <form onSubmit={handleDialogSubmit} className="grid gap-4">
+          <h2 className="text-xl font-semibold">Neue Pflanze hinzufügen</h2>
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <input
+              type="text"
+              className="mt-1 block w-full border rounded px-2 py-1"
+              value={dialogName}
+              onChange={e => setDialogName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Abstand (cm)</label>
+            <input
+              type="number"
+              className="mt-1 block w-full border rounded px-2 py-1"
+              value={dialogWindowDistanceCm}
+              onChange={e => setDialogWindowDistanceCm(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={dialogNearHeater}
+              onChange={e => setDialogNearHeater(e.target.checked)}
+              className="h-4 w-4"
+            />
+            <label className="text-sm font-medium">Nahe Heizung</label>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Größe (cm)</label>
+            <input
+              type="number"
+              className="mt-1 block w-full border rounded px-2 py-1"
+              value={dialogSizeCm}
+              onChange={e => setDialogSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Topf Ø (cm)</label>
+            <input
+              type="number"
+              className="mt-1 block w-full border rounded px-2 py-1"
+              value={dialogPotSizeCm}
+              onChange={e => setDialogPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              type="button"
+              onClick={() => dialogRef.current?.close()}
+              className="px-4 py-2 rounded border"
+            >
+              Abbrechen
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+            >
+              Speichern
+            </button>
+          </div>
+        </form>
+      </dialog>
       {/* Hidden file input for FAB image capture */}
       <input
         type="file"
