@@ -21,7 +21,7 @@ const RoomDetail: React.FC = () => {
   const addImage = useStore(state => state.addImage);
 
   // Dialog state for new plant creation
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogName, setDialogName] = useState('');
   const [dialogWindowDistanceCm, setDialogWindowDistanceCm] = useState<number | ''>('');
   const [dialogNearHeater, setDialogNearHeater] = useState(false);
@@ -84,7 +84,7 @@ const RoomDetail: React.FC = () => {
         setDialogNearHeater(false);
         setDialogSizeCm('');
         setDialogPotSizeCm('');
-        dialogRef.current?.showModal();
+        setIsDialogOpen(true);
       } catch (err) {
         console.error('Fehler bei KI-Erkennung:', err);
         alert('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
@@ -106,7 +106,7 @@ const RoomDetail: React.FC = () => {
       potSizeCm: dialogPotSizeCm === '' ? undefined : dialogPotSizeCm,
     });
     await addImage({ plantId, timestamp: Date.now(), dataURL: dialogDataUrl });
-    dialogRef.current?.close();
+    setIsDialogOpen(false);
   };
 
   const getProfileImage = (plantId: string): string | undefined => {
@@ -151,73 +151,75 @@ const RoomDetail: React.FC = () => {
           </Link>
         ))}
       </div>
-      {/* Dialog for new plant creation */}
-      <dialog ref={dialogRef} className="p-6 bg-white rounded shadow-lg">
-        <form onSubmit={handleDialogSubmit} className="grid gap-4">
-          <h2 className="text-xl font-semibold">Neue Pflanze hinzufügen</h2>
-          <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
-              type="text"
-              className="mt-1 block w-full border rounded px-2 py-1"
-              value={dialogName}
-              onChange={e => setDialogName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Abstand (cm)</label>
-            <input
-              type="number"
-              className="mt-1 block w-full border rounded px-2 py-1"
-              value={dialogWindowDistanceCm}
-              onChange={e => setDialogWindowDistanceCm(e.target.value === '' ? '' : Number(e.target.value))}
-            />
-          </div>
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={dialogNearHeater}
-              onChange={e => setDialogNearHeater(e.target.checked)}
-              className="h-4 w-4"
-            />
-            <label className="text-sm font-medium">Nahe Heizung</label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Größe (cm)</label>
-            <input
-              type="number"
-              className="mt-1 block w-full border rounded px-2 py-1"
-              value={dialogSizeCm}
-              onChange={e => setDialogSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Topf Ø (cm)</label>
-            <input
-              type="number"
-              className="mt-1 block w-full border rounded px-2 py-1"
-              value={dialogPotSizeCm}
-              onChange={e => setDialogPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-            />
-          </div>
-          <div className="flex justify-end space-x-2 mt-4">
-            <button
-              type="button"
-              onClick={() => dialogRef.current?.close()}
-              className="px-4 py-2 rounded border"
-            >
-              Abbrechen
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-            >
-              Speichern
-            </button>
-          </div>
-        </form>
-      </dialog>
+      {/* Modal dialog for new plant creation */}
+      {isDialogOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <form onSubmit={handleDialogSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md grid gap-4">
+            <h2 className="text-xl font-semibold">Neue Pflanze hinzufügen</h2>
+            <div>
+              <label className="block text-sm font-medium">Name</label>
+              <input
+                type="text"
+                className="mt-1 block w-full border rounded px-2 py-1"
+                value={dialogName}
+                onChange={e => setDialogName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Fensterabstand (cm)</label>
+              <input
+                type="number"
+                className="mt-1 block w-full border rounded px-2 py-1"
+                value={dialogWindowDistanceCm}
+                onChange={e => setDialogWindowDistanceCm(e.target.value === '' ? '' : Number(e.target.value))}
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={dialogNearHeater}
+                onChange={e => setDialogNearHeater(e.target.checked)}
+                className="h-4 w-4"
+              />
+              <label className="text-sm font-medium">Nahe Heizung</label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Größe (cm)</label>
+              <input
+                type="number"
+                className="mt-1 block w-full border rounded px-2 py-1"
+                value={dialogSizeCm}
+                onChange={e => setDialogSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Topf Ø (cm)</label>
+              <input
+                type="number"
+                className="mt-1 block w-full border rounded px-2 py-1"
+                value={dialogPotSizeCm}
+                onChange={e => setDialogPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+              />
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                type="button"
+                onClick={() => setIsDialogOpen(false)}
+                className="px-4 py-2 rounded border"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+              >
+                Speichern
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
       {/* Hidden file input for FAB image capture */}
       <input
         type="file"
