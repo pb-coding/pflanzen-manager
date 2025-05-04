@@ -28,11 +28,13 @@ const RoomDetail: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // Load user settings (e.g., stored OpenAI API key) and data on mount
+    loadSettings();
     loadRooms();
     loadPlants();
     loadImages();
     loadTasks();
-  }, [loadRooms, loadPlants, loadImages, loadTasks]);
+  }, [loadSettings, loadRooms, loadPlants, loadImages, loadTasks]);
 
   const room = rooms.find(r => r.id === roomId);
   if (!room) {
