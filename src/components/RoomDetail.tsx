@@ -1,7 +1,8 @@
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Plant, PlantImage, Task } from '../types/models';
+import { recognizePlantName } from '../services/openai';
 
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -14,6 +15,10 @@ const RoomDetail: React.FC = () => {
   const loadImages = useStore(state => state.loadImages);
   const loadTasks = useStore(state => state.loadTasks);
   const addPlant = useStore(state => state.addPlant);
+  const settings = useStore(state => state.settings);
+  const loadSettings = useStore(state => state.loadSettings);
+  const saveSettings = useStore(state => state.saveSettings);
+  const addImage = useStore(state => state.addImage);
 
   const [name, setName] = useState('');
   const [windowDistanceCm, setWindowDistanceCm] = useState<number | ''>('');
@@ -40,6 +45,50 @@ const RoomDetail: React.FC = () => {
   }
 
   const roomPlants = plants.filter(p => p.roomId === room.id);
+  // Ref for hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle FAB click to open file chooser
+  const handleFabClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Handle file selection (capture)
+  const handleFileCapture = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Ensure settings loaded
+    if (settings === undefined) {
+      await loadSettings();
+    }
+    let apiKey = settings?.openAiApiKey;
+    if (!apiKey) {
+      apiKey = window.prompt('Bitte OpenAI API-Key eingeben:') || '';
+      if (!apiKey) return;
+      await saveSettings({ openAiApiKey: apiKey });
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      try {
+        // Recognize plant name via GPT-4o
+        const recognized = await recognizePlantName(dataUrl, apiKey!);
+        // Allow user to confirm or correct
+        const plantName = window.prompt(
+          'Pflanzenname bestätigen oder korrigieren:',
+          recognized
+        );
+        if (!plantName || !plantName.trim()) return;
+        // Create plant and image
+        const plantId = await addPlant({ roomId: room.id, name: plantName.trim() });
+        await addImage({ plantId, timestamp: Date.now(), dataURL: dataUrl });
+      } catch (err) {
+        console.error('Fehler bei KI-Erkennung:', err);
+        alert('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -162,6 +211,22 @@ const RoomDetail: React.FC = () => {
           </Link>
         ))}
       </div>
+      {/* Hidden file input for FAB image capture */}
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        ref={fileInputRef}
+        onChange={handleFileCapture}
+        className="hidden"
+      />
+      {/* Floating Action Button */}
+      <button
+        onClick={handleFabClick}
+        className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none"
+      >
+        +
+      </button>
     </div>
   );
 };
