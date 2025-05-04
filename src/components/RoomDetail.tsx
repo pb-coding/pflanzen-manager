@@ -137,7 +137,11 @@ const RoomDetail: React.FC = () => {
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {roomPlants.map(plant => (
-          <div key={plant.id} className="bg-white shadow rounded p-4 flex flex-col items-center">
+          <Link
+            to={`/rooms/${room.id}/plants/${plant.id}`}
+            key={plant.id}
+            className="block bg-white shadow rounded p-4 flex flex-col items-center hover:shadow-md"
+          >
             {getProfileImage(plant.id) ? (
               <img
                 src={getProfileImage(plant.id)}
@@ -155,7 +159,7 @@ const RoomDetail: React.FC = () => {
                 {countOpenTasks(plant.id)} offene Aufgabe{countOpenTasks(plant.id) > 1 ? 'n' : ''}
               </span>
             )}
-          </div>
+          </Link>
         ))}
       </div>
     </div>
