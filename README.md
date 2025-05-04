@@ -1,54 +1,111 @@
-# React + TypeScript + Vite
+# pflanzen-manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Konzept
 
-Currently, two official plugins are available:
+### Fachliches Konzept
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Die App dient der strukturierten Pflege und Dokumentation von Zimmer- und Balkonpflanzen. Alle Daten werden lokal im Browser gespeichert und optional mit OpenAI ausgewertet.
 
-## Expanding the ESLint configuration
+#### 1. Datenmodelle
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Räume**
+- `name`: Name des Raums
+- `lightDirection`: Norden | Osten | Süden | Westen
+- `indoor`: boolean (true = Innenraum, false = Außenbereich)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+**Pflanzen**
+- `roomId`: Referenz auf zugehörigen Raum
+- `name`: Pflanzenname
+- `windowDistanceCm`: Abstand zum Fenster (cm)
+- `nearHeater`: boolean
+- `sizeCm`: Pflanzengröße (cm)
+- `potSizeCm`: Topfdurchmesser (cm)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Bilder**
+- `plantId`: Referenz auf Pflanze
+- `timestamp`: Zeitstempel
+- `dataURL`: kodiertes Bild
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Tipps (generiert durch OpenAI)**
+- Gießen
+- Düngen
+- Umtopfen (inkl. Substrat)
+- Standortempfehlung
+- Gesundheitszustand
+- Besprühen
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+**Aufgaben**
+- Typen: Gießen, Düngen, Umtopfen, Reinigen, Foto erstellen
+- Aufgaben werden automatisch generiert, sind abhakbar und enthalten Erinnerungsdaten
+
+#### 2. Views
+
+**Räume-Übersicht**
+- Auflistung aller Räume als Cards
+- Lichtsymbol je Raum
+- Vorschau der zugehörigen Pflanzen
+- Hinweis auf offene Aufgaben
+- Button zum Erstellen eines neuen Raums
+
+**Raum-Detailansicht**
+- Pflanzenübersicht im Raum als Cards
+- Pflanzennamen, Profilbild, Aufgabenstatus
+- Button zum Erstellen einer neuen Pflanze
+
+**Pflanzen-Detailansicht**
+- Aktuelles Profilbild + 2 ältere Bilder als Header
+- Pflanzeneigenschaften (Fensterabstand, Heizungsnähe, Topfgröße, Raum)
+- Generierte Tipps (basierend auf letztem Bild)
+- Aufgabenliste mit Abhak-Funktion
+- Foto-Funktion
+- Button zum Löschen (Friedhof)
+
+---
+
+### Technisches Konzept
+
+**Architektur**
+- Frontend-only SPA
+- Framework: React mit Vite
+- Styling: Tailwind CSS
+- Datenhaltung: IndexedDB (`idb` oder `Dexie`)
+- Kein Backend
+- OpenAI-API-Key wird vom User manuell eingegeben und lokal gespeichert (LocalStorage)
+
+**Technische Komponenten**
+
+**IndexedDB-Datenstruktur**
+- `rooms`: { id, name, lightDirection, indoor }
+- `plants`: { id, roomId, name, windowDistanceCm, nearHeater, sizeCm, potSizeCm }
+- `images`: { id, plantId, timestamp, dataURL }
+- `tasks`: { id, plantId, type, dueDate, done }
+- `tips`: { id, plantId, generatedAt, content }
+- `settings`: { openAiApiKey }
+
+**State-Management**
+- Lightweight (Zustand oder `useContext` + `useReducer`)
+
+**OpenAI API-Integration**
+- Eingabe und Speicherung des API-Keys im UI (LocalStorage)
+- Nutzung von `gpt-4o` zur Bildanalyse via base64-encoded `dataURL`
+- Keine Weitergabe des API-Keys außerhalb des Clients
+
+**Security**
+- API-Key wird ausschließlich lokal gehalten
+- UI-Warnung bzgl. Verantwortung und Sichtbarkeit
+- Optional: Sichtprüfung des gespeicherten Keys
+
+**Offlinefähigkeit**
+- Volle Funktion ohne Internet (außer OpenAI-Zugriffe)
+- Optionaler Service Worker zur Offline-Optimierung
+
+---
+
+## Technologiestack
+
+- **Framework/Bibliothek:** [React](https://react.dev/)
+- **Build-Tool:** [Vite](https://vitejs.dev/)
+- **Sprache:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Linting:** [ESLint](https://eslint.org/)
+- **Paketmanager:** npm
