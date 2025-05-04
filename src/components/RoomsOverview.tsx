@@ -1,4 +1,5 @@
 import React, { useEffect, useState, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { LightDirection, Room } from '../types/models';
 
@@ -96,7 +97,11 @@ const RoomsOverview: React.FC = () => {
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {rooms.map(room => (
-          <div key={room.id} className="bg-white shadow rounded p-4">
+          <Link
+            to={`/rooms/${room.id}`}
+            key={room.id}
+            className="block bg-white shadow rounded p-4 hover:shadow-md"
+          >
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">{room.name}</h2>
               <span className="text-2xl" title={room.lightDirection}>
@@ -118,7 +123,7 @@ const RoomsOverview: React.FC = () => {
                 {countOpenTasks(room)} offene Aufgabe{countOpenTasks(room) > 1 ? 'n' : ''}
               </div>
             )}
-          </div>
+          </Link>
         ))}
       </div>
     </div>
