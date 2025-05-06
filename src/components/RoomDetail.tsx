@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Plant, PlantImage, Task } from '../types/models';
 import { recognizePlantName } from '../services/openai';
+import FloatingActionButton from './FloatingActionButton';
 
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -230,12 +231,11 @@ const RoomDetail: React.FC = () => {
         className="hidden"
       />
       {/* Floating Action Button */}
-      <button
-        onClick={handleFabClick}
-        className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none"
-      >
-        +
-      </button>
+      <FloatingActionButton 
+        onClick={handleFabClick} 
+        color="blue" 
+        ariaLabel="Neue Pflanze hinzufügen" 
+      />
     </div>
   );
 };

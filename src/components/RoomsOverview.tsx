@@ -2,6 +2,7 @@ import React, { useEffect, useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { LightDirection, Room } from '../types/models';
+import FloatingActionButton from './FloatingActionButton';
 
 const directionIcon = (dir: LightDirection) => {
   switch (dir) {
@@ -156,13 +157,11 @@ const RoomsOverview: React.FC = () => {
       )}
 
       {/* Floating Action Button */}
-      <button
-        onClick={openDialog}
-        className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 focus:outline-none"
-        aria-label="Neuen Raum hinzufügen"
-      >
-        +
-      </button>
+      <FloatingActionButton 
+        onClick={openDialog} 
+        color="green" 
+        ariaLabel="Neuen Raum hinzufügen" 
+      />
     </div>
   );
 };
