@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore';
 import { getArchivedPlants, restorePlant, permanentlyDeletePlant } from '../services/db';
 
 const PlantCemetery: React.FC = () => {
-  const plants = useStore(state => state.plants);
+  // We don't need plants from the store since we're getting archived plants directly from the DB
   const images = useStore(state => state.images);
   const rooms = useStore(state => state.rooms);
   const loadPlants = useStore(state => state.loadPlants);

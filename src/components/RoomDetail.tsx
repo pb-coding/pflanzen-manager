@@ -1,7 +1,6 @@
 import React, { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { Plant, PlantImage, Task } from '../types/models';
 import { analyzePlantImage, OpenAIError, PlantAnalysisResult } from '../services/openai';
 import { generateTasksFromTips, formatCareTipsForDisplay } from '../services/taskGenerator';
 import FloatingActionButton from './FloatingActionButton';

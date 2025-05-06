@@ -1,7 +1,6 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { Plant } from '../types/models';
 import { analyzePlantImage, OpenAIError } from '../services/openai';
 import { generateTasksFromTips, formatCareTipsForDisplay } from '../services/taskGenerator';
 import LoadingSpinner from './LoadingSpinner';
@@ -23,7 +22,6 @@ const PlantDetail: React.FC = () => {
   const loadTips = useStore(state => state.loadTips);
   const updateTask = useStore(state => state.updateTask);
   const addImage = useStore(state => state.addImage);
-  const deletePlant = useStore(state => state.deletePlant);
   const addTip = useStore(state => state.addTip);
   const addTask = useStore(state => state.addTask);
   const settings = useStore(state => state.settings);
