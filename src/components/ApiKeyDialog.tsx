@@ -19,16 +19,16 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({ isOpen, onClose, onSave }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">OpenAI API-Schlüssel benötigt</h2>
-        <p className="mb-4 text-gray-600">
+    <div className="modal-overlay animate-fade-in">
+      <div className="modal-organic animate-slide-up">
+        <h2 className="text-2xl font-semibold mb-4">OpenAI API-Schlüssel benötigt</h2>
+        <p className="mb-6 text-gray-600">
           Um Pflanzen automatisch zu erkennen, wird ein OpenAI API-Schlüssel benötigt. 
           Dieser wird sicher auf Ihrem Gerät gespeichert und nicht an Dritte weitergegeben.
         </p>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="apiKey" className="block text-sm font-medium mb-1">
+          <div className="mb-6">
+            <label htmlFor="apiKey" className="block text-sm font-medium mb-2">
               API-Schlüssel
             </label>
             <input
@@ -36,22 +36,22 @@ const ApiKeyDialog: React.FC<ApiKeyDialogProps> = ({ isOpen, onClose, onSave }) 
               id="apiKey"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input-organic"
               placeholder="sk-..."
               required
             />
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded border hover:bg-gray-100"
+              className="btn-outline"
             >
               Abbrechen
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              className="btn-secondary"
             >
               Speichern
             </button>

@@ -234,55 +234,110 @@ const RoomDetail: React.FC = () => {
 
   return (
     <div className="p-6">
-      <Link to="/" className="text-blue-600 hover:underline">&larr; Zurück</Link>
-      <h1 className="text-3xl font-bold mt-2 mb-4">{room.name}</h1>
+      <Link 
+        to="/" 
+        className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
+        style={{ color: 'var(--color-blue-light)' }}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Zurück
+      </Link>
+      <h1 className="text-3xl font-bold mb-6" style={{ color: 'var(--color-anthracite)' }}>{room.name}</h1>
+      
       {/* Plant creation handled via floating button and dialog */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-20">
         {roomPlants.map(plant => (
           <Link
             to={`/rooms/${room.id}/plants/${plant.id}`}
             key={plant.id}
-            className="block bg-white shadow rounded p-4 flex flex-col items-center hover:shadow-md"
+            className="organic-card p-5 flex flex-col items-center animate-fade-in"
           >
             {getProfileImage(plant.id) ? (
               <img
                 src={getProfileImage(plant.id)}
                 alt={plant.name}
-                className="h-24 w-24 object-cover rounded-full mb-2"
+                className="plant-image h-28 w-28 mb-4"
               />
             ) : (
-              <div className="h-24 w-24 bg-gray-200 rounded-full mb-2 flex items-center justify-center text-gray-500">
-                Foto
+              <div 
+                className="h-28 w-28 rounded-full mb-4 flex items-center justify-center"
+                style={{ 
+                  backgroundColor: 'rgba(124, 181, 24, 0.1)', 
+                  color: 'var(--color-green-primary)',
+                  border: '4px solid var(--color-beige)'
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15.1 2.8c-.1-.1-.1-.1 0 0-4 4-5 8-5 8s4 1 8-3c0 0 .1-.1 0 0"></path>
+                  <path d="M16 8l-4 4"></path>
+                  <path d="M18 2c-1.8 1.8-4 3-6.5 3.5C8 6 2 12 2 12s5.5 6 12 6c1.3 0 2.5-.2 3.6-.5"></path>
+                </svg>
               </div>
             )}
-            <h3 className="text-lg font-semibold">{plant.name}</h3>
+            <h3 className="text-xl font-semibold mb-2">{plant.name}</h3>
             {countOpenTasks(plant.id) > 0 && (
-              <span className="mt-1 text-sm text-red-600">
-                {countOpenTasks(plant.id)} offene Aufgabe{countOpenTasks(plant.id) > 1 ? 'n' : ''}
-              </span>
+              <div className="mt-1 flex items-center" style={{ color: 'var(--color-error)' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <span className="text-sm font-medium">
+                  {countOpenTasks(plant.id)} offene Aufgabe{countOpenTasks(plant.id) > 1 ? 'n' : ''}
+                </span>
+              </div>
             )}
           </Link>
         ))}
+        
+        {roomPlants.length === 0 && (
+          <div className="col-span-full flex flex-col items-center justify-center p-10 organic-card" style={{ backgroundColor: 'rgba(124, 181, 24, 0.05)' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-green-light)', marginBottom: '1rem' }}>
+              <path d="M15.1 2.8c-.1-.1-.1-.1 0 0-4 4-5 8-5 8s4 1 8-3c0 0 .1-.1 0 0"></path>
+              <path d="M16 8l-4 4"></path>
+              <path d="M18 2c-1.8 1.8-4 3-6.5 3.5C8 6 2 12 2 12s5.5 6 12 6c1.3 0 2.5-.2 3.6-.5"></path>
+            </svg>
+            <p className="text-lg mb-2" style={{ color: 'var(--color-anthracite)' }}>Noch keine Pflanzen in diesem Raum</p>
+            <p className="text-sm text-center mb-4" style={{ color: 'var(--color-anthracite)', opacity: 0.7 }}>
+              Füge deine erste Pflanze hinzu, indem du auf den Kamera-Button unten rechts klickst.
+            </p>
+          </div>
+        )}
       </div>
       {/* Loading overlay */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-            <LoadingSpinner size="large" color="blue" message="Pflanze wird analysiert..." />
+        <div className="modal-overlay">
+          <div className="modal-organic animate-fade-in flex flex-col items-center py-8">
+            <LoadingSpinner size="large" color="secondary" message="Pflanze wird analysiert..." />
+            <p className="text-sm mt-4 text-center max-w-xs" style={{ color: 'var(--color-anthracite)', opacity: 0.7 }}>
+              Die KI analysiert dein Pflanzenfoto und erstellt personalisierte Pflegetipps...
+            </p>
           </div>
         </div>
       )}
       
       {/* Error message */}
       {errorMessage && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 className="text-xl font-semibold text-red-600 mb-2">Fehler</h3>
-            <p className="mb-4">{errorMessage}</p>
+        <div className="modal-overlay">
+          <div className="modal-organic animate-slide-up">
+            <div className="flex items-start mb-4">
+              <div 
+                className="w-10 h-10 rounded-full flex items-center justify-center mr-3"
+                style={{ backgroundColor: 'rgba(214, 64, 69, 0.1)', color: 'var(--color-error)' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-error)' }}>Fehler</h3>
+                <p className="mb-4" style={{ color: 'var(--color-anthracite)' }}>{errorMessage}</p>
+              </div>
+            </div>
             <div className="flex justify-end">
               <button
                 onClick={() => setErrorMessage(null)}
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                className="btn-secondary"
               >
                 Schließen
               </button>
@@ -300,66 +355,93 @@ const RoomDetail: React.FC = () => {
       
       {/* Modal dialog for new plant creation */}
       {isPlantDialogOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <form onSubmit={handlePlantDialogSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md grid gap-4">
-            <h2 className="text-xl font-semibold">Neue Pflanze hinzufügen</h2>
-            <div>
-              <label className="block text-sm font-medium">Name</label>
+        <div className="modal-overlay">
+          <form onSubmit={handlePlantDialogSubmit} className="modal-organic animate-slide-up">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold">Neue Pflanze hinzufügen</h2>
+              {dialogDataUrl && (
+                <div 
+                  className="w-16 h-16 rounded-full overflow-hidden border-4"
+                  style={{ borderColor: 'var(--color-beige)' }}
+                >
+                  <img 
+                    src={dialogDataUrl} 
+                    alt="Pflanzenfoto" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Name</label>
               <input
                 type="text"
-                className="mt-1 block w-full border rounded px-2 py-1"
+                className="input-organic"
                 value={dialogName}
                 onChange={e => setDialogName(e.target.value)}
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium">Fensterabstand (cm)</label>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Fensterabstand (cm)</label>
               <input
                 type="number"
-                className="mt-1 block w-full border rounded px-2 py-1"
+                className="input-organic"
                 value={dialogWindowDistanceCm}
                 onChange={e => setDialogWindowDistanceCm(e.target.value === '' ? '' : Number(e.target.value))}
+                placeholder="Abstand in cm"
               />
             </div>
-            <div className="flex items-center space-x-2">
+            
+            <div className="flex items-center mb-4">
               <input
                 type="checkbox"
+                id="near-heater-checkbox"
                 checked={dialogNearHeater}
                 onChange={e => setDialogNearHeater(e.target.checked)}
-                className="h-4 w-4"
+                className="checkbox-leaf"
               />
-              <label className="text-sm font-medium">Nahe Heizung</label>
+              <label htmlFor="near-heater-checkbox" className="text-sm font-medium ml-2">
+                Nahe Heizung
+              </label>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Größe (cm)</label>
-              <input
-                type="number"
-                className="mt-1 block w-full border rounded px-2 py-1"
-                value={dialogSizeCm}
-                onChange={e => setDialogSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-              />
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Größe (cm)</label>
+                <input
+                  type="number"
+                  className="input-organic"
+                  value={dialogSizeCm}
+                  onChange={e => setDialogSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder="Höhe in cm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Topf Ø (cm)</label>
+                <input
+                  type="number"
+                  className="input-organic"
+                  value={dialogPotSizeCm}
+                  onChange={e => setDialogPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder="Durchmesser in cm"
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Topf Ø (cm)</label>
-              <input
-                type="number"
-                className="mt-1 block w-full border rounded px-2 py-1"
-                value={dialogPotSizeCm}
-                onChange={e => setDialogPotSizeCm(e.target.value === '' ? '' : Number(e.target.value))}
-              />
-            </div>
-            <div className="flex justify-end space-x-2 mt-4">
+            
+            <div className="flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={() => setIsPlantDialogOpen(false)}
-                className="px-4 py-2 rounded border"
+                className="btn-outline"
               >
                 Abbrechen
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                className="btn-primary"
               >
                 Speichern
               </button>
@@ -379,7 +461,8 @@ const RoomDetail: React.FC = () => {
       {/* Floating Action Button */}
       <FloatingActionButton 
         onClick={handleFabClick} 
-        color="blue" 
+        color="secondary" 
+        icon="camera"
         ariaLabel="Neue Pflanze hinzufügen" 
       />
     </div>

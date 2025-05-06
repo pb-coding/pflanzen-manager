@@ -270,7 +270,7 @@ const PlantDetail: React.FC = () => {
         />
         {(uploading || isAnalyzing) && (
           <div className="flex items-center mt-2">
-            <LoadingSpinner size="small" color="green" />
+            <LoadingSpinner size="small" color="primary" />
             <span className="ml-2 text-sm text-gray-600">
               {isAnalyzing ? 'Pflanze wird analysiert...' : 'Foto wird hochgeladen...'}
             </span>
