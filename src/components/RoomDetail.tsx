@@ -2,8 +2,10 @@ import React, { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'reac
 import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Plant, PlantImage, Task } from '../types/models';
-import { recognizePlantName } from '../services/openai';
+import { recognizePlantName, OpenAIError } from '../services/openai';
 import FloatingActionButton from './FloatingActionButton';
+import ApiKeyDialog from './ApiKeyDialog';
+import LoadingSpinner from './LoadingSpinner';
 
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -21,16 +23,25 @@ const RoomDetail: React.FC = () => {
   const saveSettings = useStore(state => state.saveSettings);
   const addImage = useStore(state => state.addImage);
 
-  // Dialog state for new plant creation
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // Dialog states
+  const [isPlantDialogOpen, setIsPlantDialogOpen] = useState(false);
+  const [isApiKeyDialogOpen, setIsApiKeyDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  // Plant dialog state
   const [dialogName, setDialogName] = useState('');
   const [dialogWindowDistanceCm, setDialogWindowDistanceCm] = useState<number | ''>('');
   const [dialogNearHeater, setDialogNearHeater] = useState(false);
   const [dialogSizeCm, setDialogSizeCm] = useState<number | ''>('');
   const [dialogPotSizeCm, setDialogPotSizeCm] = useState<number | ''>('');
   const [dialogDataUrl, setDialogDataUrl] = useState<string>('');
+  
   // Ref for hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Temporary API key for the current operation
+  const [tempApiKey, setTempApiKey] = useState<string>('');
 
   useEffect(() => {
     // Load user settings (e.g., stored OpenAI API key) and data on mount
@@ -58,26 +69,39 @@ const RoomDetail: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle file selection (capture)
-  const handleFileCapture = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    // Ensure settings loaded
-    if (settings === undefined) {
-      await loadSettings();
-    }
-    let apiKey = settings?.openAiApiKey;
-    if (!apiKey) {
-      apiKey = window.prompt('Bitte OpenAI API-Key eingeben:') || '';
-      if (!apiKey) return;
-      await saveSettings({ openAiApiKey: apiKey });
-    }
+  // Handle API key save from dialog
+  const handleApiKeySave = async (apiKey: string) => {
+    setTempApiKey(apiKey);
+    setIsApiKeyDialogOpen(false);
+    await saveSettings({ openAiApiKey: apiKey });
+    await processSelectedImage();
+  };
+  
+  // Process the selected image with the API key
+  const processSelectedImage = async () => {
+    const fileInput = fileInputRef.current;
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return;
+    
+    const file = fileInput.files[0];
     const reader = new FileReader();
+    
     reader.onload = async () => {
       const dataUrl = reader.result as string;
+      setIsLoading(true);
+      
       try {
-        // Recognize plant name via GPT-4o
-        const recognized = await recognizePlantName(dataUrl, apiKey!);
+        // Clear any previous errors
+        setErrorMessage(null);
+        
+        // Use either the temp API key or the one from settings
+        const apiKey = tempApiKey || settings?.openAiApiKey;
+        if (!apiKey) {
+          throw new Error('No API key available');
+        }
+        
+        // Recognize plant name via OpenAI
+        const recognized = await recognizePlantName(dataUrl, apiKey);
+        
         // Open dialog prefilled with recognized name and image
         setDialogDataUrl(dataUrl);
         setDialogName(recognized);
@@ -85,17 +109,56 @@ const RoomDetail: React.FC = () => {
         setDialogNearHeater(false);
         setDialogSizeCm('');
         setDialogPotSizeCm('');
-        setIsDialogOpen(true);
+        setIsPlantDialogOpen(true);
       } catch (err) {
         console.error('Fehler bei KI-Erkennung:', err);
-        alert('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
+        
+        // Handle different error types
+        if (err instanceof OpenAIError) {
+          if (err.status === 401) {
+            setErrorMessage('Ungültiger API-Schlüssel. Bitte überprüfen Sie Ihren OpenAI API-Schlüssel.');
+            // Show API key dialog again
+            setIsApiKeyDialogOpen(true);
+          } else {
+            setErrorMessage(`Fehler bei der Pflanzen-Erkennung: ${err.message}`);
+          }
+        } else {
+          setErrorMessage('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
+        }
+      } finally {
+        setIsLoading(false);
+        // Reset the file input to allow selecting the same file again
+        fileInput.value = '';
       }
     };
+    
     reader.readAsDataURL(file);
   };
+  
+  // Handle file selection (capture)
+  const handleFileCapture = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Ensure settings loaded
+    if (settings === undefined) {
+      await loadSettings();
+    }
+    
+    // Check if we have an API key
+    const apiKey = settings?.openAiApiKey;
+    if (!apiKey) {
+      // Show API key dialog
+      setIsApiKeyDialogOpen(true);
+      return;
+    }
+    
+    // Process the image with the existing API key
+    await processSelectedImage();
+  };
 
-  // Handle dialog form submission
-  const handleDialogSubmit = async (e: FormEvent) => {
+  // Handle plant dialog form submission
+  const handlePlantDialogSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!dialogName.trim()) return;
     const plantId = await addPlant({
@@ -107,7 +170,7 @@ const RoomDetail: React.FC = () => {
       potSizeCm: dialogPotSizeCm === '' ? undefined : dialogPotSizeCm,
     });
     await addImage({ plantId, timestamp: Date.now(), dataURL: dialogDataUrl });
-    setIsDialogOpen(false);
+    setIsPlantDialogOpen(false);
   };
 
   const getProfileImage = (plantId: string): string | undefined => {
@@ -152,10 +215,44 @@ const RoomDetail: React.FC = () => {
           </Link>
         ))}
       </div>
-      {/* Modal dialog for new plant creation */}
-      {isDialogOpen && (
+      {/* Loading overlay */}
+      {isLoading && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-          <form onSubmit={handleDialogSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md grid gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+            <LoadingSpinner size="large" color="blue" message="Pflanze wird erkannt..." />
+          </div>
+        </div>
+      )}
+      
+      {/* Error message */}
+      {errorMessage && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+            <h3 className="text-xl font-semibold text-red-600 mb-2">Fehler</h3>
+            <p className="mb-4">{errorMessage}</p>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setErrorMessage(null)}
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Schließen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* API Key Dialog */}
+      <ApiKeyDialog 
+        isOpen={isApiKeyDialogOpen}
+        onClose={() => setIsApiKeyDialogOpen(false)}
+        onSave={handleApiKeySave}
+      />
+      
+      {/* Modal dialog for new plant creation */}
+      {isPlantDialogOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <form onSubmit={handlePlantDialogSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md grid gap-4">
             <h2 className="text-xl font-semibold">Neue Pflanze hinzufügen</h2>
             <div>
               <label className="block text-sm font-medium">Name</label>
@@ -206,7 +303,7 @@ const RoomDetail: React.FC = () => {
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 type="button"
-                onClick={() => setIsDialogOpen(false)}
+                onClick={() => setIsPlantDialogOpen(false)}
                 className="px-4 py-2 rounded border"
               >
                 Abbrechen
@@ -221,7 +318,7 @@ const RoomDetail: React.FC = () => {
           </form>
         </div>
       )}
-      {/* Hidden file input for FAB image capture */}
+      {/* Hidden file input for camera capture */}
       <input
         type="file"
         accept="image/*"
