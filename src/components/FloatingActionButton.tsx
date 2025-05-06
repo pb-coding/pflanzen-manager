@@ -43,8 +43,21 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`fab ${colorClass}`}
+      className={`fab ${colorClass} animate-fade-in`}
       aria-label={ariaLabel}
+      style={{ 
+        boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1)',
+        transform: 'scale(1)',
+        transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.1) translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1)';
+      }}
     >
       {renderIcon()}
     </button>

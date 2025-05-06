@@ -48,16 +48,34 @@ body {
 
 /* Card styles */
 .organic-card {
-  background-color: var(--color-beige);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(230, 221, 198, 0.5);
+  position: relative;
+}
+
+.organic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--color-green-light), var(--color-green-primary));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .organic-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.organic-card:hover::before {
+  opacity: 1;
 }
 
 /* Button styles */
@@ -164,21 +182,45 @@ body {
   border-radius: 16px;
   font-size: 0.875rem;
   font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.badge:hover::before {
+  transform: translateX(0);
 }
 
 .badge-green {
   background-color: rgba(124, 181, 24, 0.2);
   color: var(--color-green-primary);
+  border: 1px solid rgba(124, 181, 24, 0.3);
 }
 
 .badge-blue {
   background-color: rgba(91, 192, 235, 0.2);
   color: #2980b9;
+  border: 1px solid rgba(91, 192, 235, 0.3);
 }
 
 .badge-yellow {
   background-color: rgba(249, 200, 14, 0.2);
   color: #b7950b;
+  border: 1px solid rgba(249, 200, 14, 0.3);
 }
 
 /* Plant profile image */
