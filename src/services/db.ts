@@ -109,15 +109,24 @@ export async function saveSettings(settings: Settings): Promise<void> {
 
 // TODO: Implement remaining CRUD operations for Plant, PlantImage, Task, Tip
 // --- Plant Operations ---
-/** Get all plants */
+/** Get all active (non-archived) plants */
 export async function getAllPlants(): Promise<Plant[]> {
   const db = await getDb();
-  return db.getAll('plants');
+  const allPlants = await db.getAll('plants');
+  return allPlants.filter(p => !p.archived);
 }
-/** Get plants by room ID */
+
+/** Get all archived plants (cemetery) */
+export async function getArchivedPlants(): Promise<Plant[]> {
+  const db = await getDb();
+  const allPlants = await db.getAll('plants');
+  return allPlants.filter(p => p.archived === true);
+}
+/** Get plants by room ID (only active plants) */
 export async function getPlantsByRoomId(roomId: string): Promise<Plant[]> {
   const db = await getDb();
-  return db.getAllFromIndex('plants', 'roomId', roomId);
+  const plants = await db.getAllFromIndex('plants', 'roomId', roomId);
+  return plants.filter(p => !p.archived);
 }
 /** Get a single plant by ID */
 export async function getPlant(id: string): Promise<Plant | undefined> {
@@ -137,8 +146,35 @@ export async function updatePlant(plant: Plant): Promise<void> {
   const db = await getDb();
   await db.put('plants', plant);
 }
-/** Delete a plant and cascade its images, tasks, tips */
+/** Archive a plant (move to cemetery) */
+export async function archivePlant(id: string): Promise<void> {
+  const db = await getDb();
+  const plant = await db.get('plants', id);
+  if (plant) {
+    plant.archived = true;
+    plant.archivedAt = Date.now();
+    await db.put('plants', plant);
+  }
+}
+
+/** Restore a plant from the cemetery */
+export async function restorePlant(id: string): Promise<void> {
+  const db = await getDb();
+  const plant = await db.get('plants', id);
+  if (plant) {
+    plant.archived = false;
+    plant.archivedAt = undefined;
+    await db.put('plants', plant);
+  }
+}
+
+/** Delete a plant (archive it instead of permanent deletion) */
 export async function deletePlant(id: string): Promise<void> {
+  await archivePlant(id);
+}
+
+/** Permanently delete a plant and cascade its images, tasks, tips */
+export async function permanentlyDeletePlant(id: string): Promise<void> {
   const db = await getDb();
   // Delete associated images
   const images = await db.getAllFromIndex('images', 'plantId', id);
@@ -260,10 +296,10 @@ export async function clearSettings(): Promise<void> {
 /** Delete a room and all associated plants, images, tasks, tips */
 export async function deleteRoom(id: string): Promise<void> {
   const db = await getDb();
-  // Find and delete associated plants (which cascades)
+  // Find and permanently delete associated plants (which cascades)
   const plants = await db.getAllFromIndex('plants', 'roomId', id);
   for (const plant of plants) {
-    await deletePlant(plant.id);
+    await permanentlyDeletePlant(plant.id);
   }
   // Delete the room itself
   await db.delete('rooms', id);

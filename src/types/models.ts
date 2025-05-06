@@ -24,6 +24,8 @@ export interface Plant {
   nearHeater?: boolean;
   sizeCm?: number;
   potSizeCm?: number;
+  archived?: boolean; // Whether the plant is archived (in the "cemetery")
+  archivedAt?: number; // When the plant was archived (Unix timestamp in ms)
 }
 
 /**

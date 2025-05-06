@@ -65,7 +65,15 @@ const RoomsOverview: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Räume</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Räume</h1>
+        <Link 
+          to="/cemetery" 
+          className="text-gray-600 hover:text-gray-900 flex items-center"
+        >
+          <span className="mr-1">🪦</span> Pflanzen-Friedhof
+        </Link>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
         {rooms.map(room => (
           <Link

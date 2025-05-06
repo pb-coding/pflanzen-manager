@@ -2,7 +2,8 @@ import React, { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'reac
 import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Plant, PlantImage, Task } from '../types/models';
-import { recognizePlantName, OpenAIError } from '../services/openai';
+import { analyzePlantImage, OpenAIError, PlantAnalysisResult } from '../services/openai';
+import { generateTasksFromTips, formatCareTipsForDisplay } from '../services/taskGenerator';
 import FloatingActionButton from './FloatingActionButton';
 import ApiKeyDialog from './ApiKeyDialog';
 import LoadingSpinner from './LoadingSpinner';
@@ -22,6 +23,9 @@ const RoomDetail: React.FC = () => {
   const loadSettings = useStore(state => state.loadSettings);
   const saveSettings = useStore(state => state.saveSettings);
   const addImage = useStore(state => state.addImage);
+  const addTip = useStore(state => state.addTip);
+  const addTask = useStore(state => state.addTask);
+  const loadTips = useStore(state => state.loadTips);
 
   // Dialog states
   const [isPlantDialogOpen, setIsPlantDialogOpen] = useState(false);
@@ -36,6 +40,7 @@ const RoomDetail: React.FC = () => {
   const [dialogSizeCm, setDialogSizeCm] = useState<number | ''>('');
   const [dialogPotSizeCm, setDialogPotSizeCm] = useState<number | ''>('');
   const [dialogDataUrl, setDialogDataUrl] = useState<string>('');
+  const [plantAnalysis, setPlantAnalysis] = useState<PlantAnalysisResult | null>(null);
   
   // Ref for hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +55,8 @@ const RoomDetail: React.FC = () => {
     loadPlants();
     loadImages();
     loadTasks();
-  }, [loadSettings, loadRooms, loadPlants, loadImages, loadTasks]);
+    loadTips();
+  }, [loadSettings, loadRooms, loadPlants, loadImages, loadTasks, loadTips]);
 
   const room = rooms.find(r => r.id === roomId);
   if (!room) {
@@ -99,19 +105,31 @@ const RoomDetail: React.FC = () => {
           throw new Error('No API key available');
         }
         
-        // Recognize plant name via OpenAI
-        const recognized = await recognizePlantName(dataUrl, apiKey);
+        // Analyze plant image via OpenAI
+        const analysis = await analyzePlantImage(
+          dataUrl, 
+          {}, // No plant info yet
+          { 
+            name: room.name,
+            lightDirection: room.lightDirection,
+            indoor: room.indoor
+          },
+          apiKey
+        );
+        
+        // Store analysis for later use
+        setPlantAnalysis(analysis);
         
         // Open dialog prefilled with recognized name and image
         setDialogDataUrl(dataUrl);
-        setDialogName(recognized);
+        setDialogName(analysis.plantName);
         setDialogWindowDistanceCm('');
         setDialogNearHeater(false);
         setDialogSizeCm('');
         setDialogPotSizeCm('');
         setIsPlantDialogOpen(true);
       } catch (err) {
-        console.error('Fehler bei KI-Erkennung:', err);
+        console.error('Fehler bei KI-Analyse:', err);
         
         // Handle different error types
         if (err instanceof OpenAIError) {
@@ -120,10 +138,10 @@ const RoomDetail: React.FC = () => {
             // Show API key dialog again
             setIsApiKeyDialogOpen(true);
           } else {
-            setErrorMessage(`Fehler bei der Pflanzen-Erkennung: ${err.message}`);
+            setErrorMessage(`Fehler bei der Pflanzen-Analyse: ${err.message}`);
           }
         } else {
-          setErrorMessage('Fehler bei der Pflanzen-Erkennung. Bitte erneut versuchen.');
+          setErrorMessage('Fehler bei der Pflanzen-Analyse. Bitte erneut versuchen.');
         }
       } finally {
         setIsLoading(false);
@@ -161,16 +179,48 @@ const RoomDetail: React.FC = () => {
   const handlePlantDialogSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!dialogName.trim()) return;
-    const plantId = await addPlant({
-      roomId: room.id,
-      name: dialogName.trim(),
-      windowDistanceCm: dialogWindowDistanceCm === '' ? undefined : dialogWindowDistanceCm,
-      nearHeater: dialogNearHeater,
-      sizeCm: dialogSizeCm === '' ? undefined : dialogSizeCm,
-      potSizeCm: dialogPotSizeCm === '' ? undefined : dialogPotSizeCm,
-    });
-    await addImage({ plantId, timestamp: Date.now(), dataURL: dialogDataUrl });
-    setIsPlantDialogOpen(false);
+    
+    try {
+      setIsLoading(true);
+      
+      // 1. Create the plant
+      const plantId = await addPlant({
+        roomId: room.id,
+        name: dialogName.trim(),
+        windowDistanceCm: dialogWindowDistanceCm === '' ? undefined : dialogWindowDistanceCm,
+        nearHeater: dialogNearHeater,
+        sizeCm: dialogSizeCm === '' ? undefined : dialogSizeCm,
+        potSizeCm: dialogPotSizeCm === '' ? undefined : dialogPotSizeCm,
+      });
+      
+      // 2. Add the image
+      const timestamp = Date.now();
+      await addImage({ plantId, timestamp, dataURL: dialogDataUrl });
+      
+      // 3. If we have plant analysis, add tips and tasks
+      if (plantAnalysis) {
+        // Add formatted tip
+        const tipContent = formatCareTipsForDisplay(plantAnalysis.careTips);
+        await addTip({
+          plantId,
+          generatedAt: timestamp,
+          content: tipContent
+        });
+        
+        // Generate and add tasks
+        const tasks = generateTasksFromTips(plantId, plantAnalysis.careTips);
+        for (const task of tasks) {
+          await addTask(task);
+        }
+      }
+      
+      setIsPlantDialogOpen(false);
+    } catch (error) {
+      console.error('Fehler beim Speichern der Pflanze:', error);
+      setErrorMessage('Fehler beim Speichern der Pflanze. Bitte erneut versuchen.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getProfileImage = (plantId: string): string | undefined => {
@@ -219,7 +269,7 @@ const RoomDetail: React.FC = () => {
       {isLoading && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-            <LoadingSpinner size="large" color="blue" message="Pflanze wird erkannt..." />
+            <LoadingSpinner size="large" color="blue" message="Pflanze wird analysiert..." />
           </div>
         </div>
       )}

@@ -85,11 +85,6 @@ Die App dient der strukturierten Pflege und Dokumentation von Zimmer- und Balkon
 **State-Management**
 - Lightweight (Zustand oder `useContext` + `useReducer`)
 
-**OpenAI API-Integration**
-- Eingabe und Speicherung des API-Keys im UI (LocalStorage)
-- Nutzung von `gpt-4o` zur Bildanalyse via base64-encoded `dataURL`
-- Keine Weitergabe des API-Keys außerhalb des Clients
-
 **Security**
 - API-Key wird ausschließlich lokal gehalten
 - UI-Warnung bzgl. Verantwortung und Sichtbarkeit
@@ -98,6 +93,44 @@ Die App dient der strukturierten Pflege und Dokumentation von Zimmer- und Balkon
 **Offlinefähigkeit**
 - Volle Funktion ohne Internet (außer OpenAI-Zugriffe)
 - Optionaler Service Worker zur Offline-Optimierung
+
+
+### Tipps, Aufgaben mittesl OpenAI API-Integration
+
+- Eingabe und Speicherung des API-Keys im UI (LocalStorage)
+- Keine Weitergabe des API-Keys außerhalb des Clients
+- OpenAI analysiert das Bild zusammen mit den strukturellen Informationen und gibt daraufhin eine strukturierte Textantwort zurück
+
+Die generierten Hinweise umfassen typischerweise:
+- Gießempfehlung
+- Düngeintervall
+- Hinweis auf Umtopfbedarf inkl. Substrat
+- Standortoptimierung
+- Gesundheitszustand (z. B. gelbe Blätter, Schädlinge)
+- Empfehlung zum Besprühen (z. B. bei trockener Luft)
+
+Diese Tipps werden lokal gespeichert und im Pflanzenprofil angezeigt.
+
+---
+
+### Automatische Aufgabenableitung
+
+Basierend auf den generierten Tipps erstellt die Anwendung automatisch Aufgaben. Beispiele:
+- Wenn die KI empfiehlt, alle 10 Tage zu gießen, wird eine wiederkehrende Aufgabe angelegt
+- Erkennt das System Schädlingsbefall, wird eine einmalige Aufgabe mit hoher Priorität erzeugt
+
+Jede Aufgabe enthält ein Fälligkeitsdatum, ist abhakbar und erscheint in den Übersichten:
+- Räume-Übersicht
+- Raum-Detailansicht
+- Pflanzen-Detailansicht
+
+---
+
+### Interaktion & Pflege
+
+Der Nutzer kann regelmäßig neue Bilder hinzufügen, um den Pflegezustand zu aktualisieren. Dabei gilt:
+- Ältere Bilder bleiben gespeichert
+- Neue Analysen basieren stets auf dem aktuellsten Bild und den neuesten Metadaten
 
 ---
 
