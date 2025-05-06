@@ -7,7 +7,7 @@ import PlantCemetery from './components/PlantCemetery';
 
 const App: React.FC = () => (
   <div className="min-h-screen bg-gray-100">
-    <BrowserRouter>
+    <BrowserRouter basename="/pflanzen-manager">
       <Routes>
         <Route path="/" element={<RoomsOverview />} />
         <Route path="/rooms/:roomId" element={<RoomDetail />} />
