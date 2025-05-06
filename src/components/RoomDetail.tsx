@@ -29,6 +29,8 @@ const RoomDetail: React.FC = () => {
   const [dialogSizeCm, setDialogSizeCm] = useState<number | ''>('');
   const [dialogPotSizeCm, setDialogPotSizeCm] = useState<number | ''>('');
   const [dialogDataUrl, setDialogDataUrl] = useState<string>('');
+  // Ref for hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // Load user settings (e.g., stored OpenAI API key) and data on mount
@@ -50,8 +52,6 @@ const RoomDetail: React.FC = () => {
   }
 
   const roomPlants = plants.filter(p => p.roomId === room.id);
-  // Ref for hidden file input
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handle FAB click to open file chooser
   const handleFabClick = () => {
