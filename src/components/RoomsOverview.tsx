@@ -22,6 +22,8 @@ const RoomsOverview: React.FC = () => {
   const loadTasks = useStore(state => state.loadTasks);
   const addRoom = useStore(state => state.addRoom);
 
+  // Modal dialog state
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [name, setName] = useState('');
   const [lightDirection, setLightDirection] = useState<LightDirection>('North');
   const [indoor, setIndoor] = useState(true);
@@ -42,9 +44,17 @@ const RoomsOverview: React.FC = () => {
       setName('');
       setLightDirection('North');
       setIndoor(true);
+      setIsDialogOpen(false);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const openDialog = () => {
+    setName('');
+    setLightDirection('North');
+    setIndoor(true);
+    setIsDialogOpen(true);
   };
 
   const countOpenTasks = (room: Room) => {
@@ -55,47 +65,7 @@ const RoomsOverview: React.FC = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Räume</h1>
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap gap-2 items-end">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Neuer Raum"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Licht</label>
-          <select
-            className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-            value={lightDirection}
-            onChange={e => setLightDirection(e.target.value as LightDirection)}
-          >
-            <option value="North">Norden</option>
-            <option value="East">Osten</option>
-            <option value="South">Süden</option>
-            <option value="West">Westen</option>
-          </select>
-        </div>
-        <div className="flex items-center space-x-1">
-          <label className="block text-sm font-medium text-gray-700">Innenraum</label>
-          <input
-            type="checkbox"
-            checked={indoor}
-            onChange={e => setIndoor(e.target.checked)}
-            className="mt-1 h-4 w-4"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-        >
-          {isSubmitting ? 'Erstellen...' : 'Neuer Raum'}
-        </button>
-      </form>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
         {rooms.map(room => (
           <Link
             to={`/rooms/${room.id}`}
@@ -126,6 +96,73 @@ const RoomsOverview: React.FC = () => {
           </Link>
         ))}
       </div>
+
+      {/* Modal dialog for new room creation */}
+      {isDialogOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md grid gap-4">
+            <h2 className="text-xl font-semibold">Neuen Raum hinzufügen</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <input
+                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Neuer Raum"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Licht</label>
+              <select
+                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
+                value={lightDirection}
+                onChange={e => setLightDirection(e.target.value as LightDirection)}
+              >
+                <option value="North">Norden</option>
+                <option value="East">Osten</option>
+                <option value="South">Süden</option>
+                <option value="West">Westen</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={indoor}
+                onChange={e => setIndoor(e.target.checked)}
+                className="h-4 w-4"
+                id="indoor-checkbox"
+              />
+              <label htmlFor="indoor-checkbox" className="text-sm font-medium text-gray-700">Innenraum</label>
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                type="button"
+                onClick={() => setIsDialogOpen(false)}
+                className="px-4 py-2 rounded border"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              >
+                {isSubmitting ? 'Erstellen...' : 'Speichern'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Floating Action Button */}
+      <button
+        onClick={openDialog}
+        className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 focus:outline-none"
+        aria-label="Neuen Raum hinzufügen"
+      >
+        +
+      </button>
     </div>
   );
 };

@@ -1,10 +1,15 @@
 /**
+ * Represents the direction of light in a room.
+ */
+export type LightDirection = 'North' | 'East' | 'South' | 'West';
+
+/**
  * Represents a physical room or outdoor area where plants are located.
  */
 export interface Room {
   id: string; // UUID or similar unique identifier
   name: string;
-  lightDirection: 'North' | 'East' | 'South' | 'West';
+  lightDirection: LightDirection;
   indoor: boolean;
 }
 
