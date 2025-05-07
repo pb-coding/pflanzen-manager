@@ -5,7 +5,7 @@ import { PlantCareTips } from './openai';
  * Extracts time intervals from text descriptions.
  * For example, "alle 7-10 Tage gießen" would return { min: 7, max: 10, unit: 'days' }
  */
-function extractTimeInterval(text: string): { min: number; max: number; unit: string } | null {
+function extractTimeInterval(text: string): { min: number; max: number; unit: 'days' | 'weeks' | 'months' } | null {
   // Look for patterns like "alle X-Y Tage/Wochen/Monate"
   const rangePattern = /alle\s+(\d+)[-\s]*(\d+)\s+(Tag|Tage|Woche|Wochen|Monat|Monate)/i;
   const singlePattern = /alle\s+(\d+)\s+(Tag|Tage|Woche|Wochen|Monat|Monate)/i;
@@ -39,12 +39,13 @@ function extractTimeInterval(text: string): { min: number; max: number; unit: st
 /**
  * Normalizes time units to a standard format
  */
-function normalizeTimeUnit(unit: string): string {
+function normalizeTimeUnit(unit: string): 'days' | 'weeks' | 'months' {
   unit = unit.toLowerCase();
   if (unit === 'tag' || unit === 'tage') return 'days';
   if (unit === 'woche' || unit === 'wochen') return 'weeks';
   if (unit === 'monat' || unit === 'monate') return 'months';
-  return unit;
+  // Default to days if unknown unit
+  return 'days';
 }
 
 /**
@@ -88,6 +89,14 @@ export function generateTasksFromTips(
       dueDate,
       done: false,
       notes: careTips.watering,
+      recurring: true,
+      recurrencePattern: {
+        interval: wateringInterval.min,
+        unit: wateringInterval.unit,
+        seasonalAdjustment: true
+      },
+      createdAt: now,
+      completionHistory: []
     });
   }
   
@@ -101,6 +110,14 @@ export function generateTasksFromTips(
       dueDate,
       done: false,
       notes: careTips.fertilizing,
+      recurring: true,
+      recurrencePattern: {
+        interval: fertilizingInterval.min,
+        unit: fertilizingInterval.unit,
+        seasonalAdjustment: true
+      },
+      createdAt: now,
+      completionHistory: []
     });
   }
   
@@ -116,6 +133,9 @@ export function generateTasksFromTips(
       dueDate,
       done: false,
       notes: careTips.repotting,
+      recurring: false, // Repotting is typically not a recurring task
+      createdAt: now,
+      completionHistory: []
     });
   }
   
@@ -129,6 +149,14 @@ export function generateTasksFromTips(
       dueDate: now + intervalToMs(3, 'days'), // Set cleaning task for 3 days from now
       done: false,
       notes: careTips.health,
+      recurring: true,
+      recurrencePattern: {
+        interval: 2,
+        unit: 'weeks',
+        seasonalAdjustment: false
+      },
+      createdAt: now,
+      completionHistory: []
     });
   }
   
@@ -139,6 +167,14 @@ export function generateTasksFromTips(
     dueDate: now + intervalToMs(4, 'weeks'),
     done: false,
     notes: 'Neues Foto erstellen, um den Fortschritt zu dokumentieren.',
+    recurring: true,
+    recurrencePattern: {
+      interval: 4,
+      unit: 'weeks',
+      seasonalAdjustment: false
+    },
+    createdAt: now,
+    completionHistory: []
   });
   
   return tasks;

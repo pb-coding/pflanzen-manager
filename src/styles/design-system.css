@@ -9,8 +9,8 @@
   
   /* Secondary colors */
   --color-green-light: #7CB518;
-  --color-blue-light: #5BC0EB;
-  --color-pink-light: #F7A9A8;
+  --color-green-soft: #5D9C59;
+  --color-brown-light: #A67C52;
   
   /* Neutral colors */
   --color-cream: #F9F7F3;
@@ -21,7 +21,7 @@
   --color-success: var(--color-green-light);
   --color-warning: var(--color-yellow-primary);
   --color-error: #D64045;
-  --color-info: var(--color-blue-light);
+  --color-info: var(--color-green-soft);
 }
 
 /* Import Google Fonts */
@@ -211,10 +211,10 @@ body {
   border: 1px solid rgba(124, 181, 24, 0.3);
 }
 
-.badge-blue {
-  background-color: rgba(91, 192, 235, 0.2);
-  color: #2980b9;
-  border: 1px solid rgba(91, 192, 235, 0.3);
+.badge-brown {
+  background-color: rgba(166, 124, 82, 0.2);
+  color: var(--color-brown-primary);
+  border: 1px solid rgba(166, 124, 82, 0.3);
 }
 
 .badge-yellow {
@@ -263,12 +263,12 @@ body {
 }
 
 .fab-secondary {
-  background-color: var(--color-blue-light);
+  background-color: var(--color-brown-light);
   color: white;
 }
 
 .fab-secondary:hover {
-  background-color: #4a9ac0;
+  background-color: #8B5A2B;
   transform: scale(1.1);
 }
 

@@ -48,6 +48,25 @@ export interface Task {
   dueDate: number; // Unix timestamp (ms)
   done: boolean;
   notes?: string; // Optional notes for the task
+  
+  // Recurring task properties
+  recurring: boolean;
+  recurrencePattern?: {
+    interval: number; // How often the task repeats
+    unit: 'days' | 'weeks' | 'months'; // Time unit for the interval
+    seasonalAdjustment?: boolean; // Whether to adjust based on season
+  };
+  completionHistory?: Array<{
+    date: number; // When the task was completed
+    notes?: string; // Optional notes about the completion
+    imageId?: string; // Optional reference to an image taken during completion
+  }>;
+  
+  // Original creation date for tracking purposes
+  createdAt?: number; // Unix timestamp (ms)
+  
+  // Parent task ID for recurring tasks
+  parentTaskId?: string; // References the original task that created this recurring instance
 }
 
 /**
