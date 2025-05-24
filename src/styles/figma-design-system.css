@@ -523,7 +523,7 @@
 .figma-watering-history-entry-left {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex: 1;
 }
 
 .figma-watering-history-entry-right {
@@ -627,16 +627,15 @@
 .figma-water-now-button {
   display: flex;
   flex-direction: row;
-  justify-content: stretch;
-  align-items: stretch;
-  gap: 16px;
-  padding: 0px 24px 0px 16px;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
   height: 56px;
   border-radius: 12px;
   background-color: var(--figma-button-green);
   color: var(--figma-bg-dark);
   font-weight: var(--figma-font-weight-bold);
-  min-width: 120px;
+  padding: 0;
 }
 
 .figma-water-now-button:disabled {

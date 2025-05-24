@@ -10,6 +10,7 @@ import FigmaWateringSchedule from '../molecules/FigmaWateringSchedule';
 import FigmaNotesSection from '../molecules/FigmaNotesSection';
 import FigmaWateringHistory from '../molecules/FigmaWateringHistory';
 import FigmaButton from '../atoms/FigmaButton';
+import FigmaIcon from '../atoms/FigmaIcon';
 
 /**
  * FigmaPlantDetailScreen - Plant detail screen (Design 27-2)
@@ -162,7 +163,7 @@ const FigmaPlantDetailScreen: React.FC = () => {
               disabled={isWatering}
               className="figma-water-now-button"
             >
-              {isWatering ? 'Watering...' : 'Water Now'}
+              <FigmaIcon name="plus" />
             </FigmaButton>
           </div>
         </div>
