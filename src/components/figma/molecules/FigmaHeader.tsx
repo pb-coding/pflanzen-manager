@@ -21,11 +21,6 @@ const FigmaHeader: React.FC<FigmaHeaderProps> = ({
 }) => {
   return (
     <div className={`figma-header ${className}`}>
-      {/* Title */}
-      <div className="figma-header-title">
-        <h1 className="figma-text-h1">{title}</h1>
-      </div>
-      
       {/* Action button */}
       {onActionClick && (
         <div className="figma-header-action">
@@ -34,6 +29,11 @@ const FigmaHeader: React.FC<FigmaHeaderProps> = ({
           </FigmaButton>
         </div>
       )}
+      
+      {/* Title */}
+      <div className="figma-header-title">
+        <h1 className="figma-text-h1">{title}</h1>
+      </div>
     </div>
   );
 };
