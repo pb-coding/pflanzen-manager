@@ -91,6 +91,7 @@
 /* ===== TYPOGRAPHY ===== */
 
 .figma-text-h1 {
+  font-family: var(--figma-font-family);
   font-size: var(--figma-text-h1);
   font-weight: var(--figma-font-weight-bold);
   line-height: var(--figma-line-height-tight);
@@ -99,6 +100,7 @@
 }
 
 .figma-text-h2 {
+  font-family: var(--figma-font-family);
   font-size: var(--figma-text-h2);
   font-weight: var(--figma-font-weight-bold);
   line-height: var(--figma-line-height-tight);
@@ -107,6 +109,7 @@
 }
 
 .figma-text-body {
+  font-family: var(--figma-font-family);
   font-size: var(--figma-text-body);
   font-weight: var(--figma-font-weight-regular);
   line-height: var(--figma-line-height-normal);
@@ -115,6 +118,7 @@
 }
 
 .figma-text-body-medium {
+  font-family: var(--figma-font-family);
   font-size: var(--figma-text-body);
   font-weight: var(--figma-font-weight-medium);
   line-height: var(--figma-line-height-normal);
@@ -123,6 +127,7 @@
 }
 
 .figma-text-small {
+  font-family: var(--figma-font-family);
   font-size: var(--figma-text-small);
   font-weight: var(--figma-font-weight-regular);
   line-height: var(--figma-line-height-normal);
