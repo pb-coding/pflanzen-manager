@@ -822,4 +822,120 @@
 .figma-add-plant-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+/* ===== IMAGE UPLOAD COMPONENT ===== */
+
+.figma-image-upload {
+  width: 100%;
+}
+
+.figma-image-upload-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  background-color: var(--figma-input-bg);
+  border: 2px dashed var(--figma-border);
+  border-radius: var(--figma-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: var(--figma-padding-lg);
+}
+
+.figma-image-upload-area:hover {
+  border-color: var(--figma-accent-green);
+  background-color: rgba(148, 199, 173, 0.05);
+}
+
+.figma-image-upload-area-drag {
+  border-color: var(--figma-button-green);
+  background-color: rgba(20, 184, 102, 0.1);
+}
+
+.figma-image-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--figma-gap-sm);
+  text-align: center;
+}
+
+.figma-image-upload-icon {
+  color: var(--figma-accent-green);
+  opacity: 0.8;
+}
+
+.figma-image-upload-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--figma-gap-xs);
+}
+
+.figma-image-upload-text .figma-text-body-medium {
+  color: var(--figma-text-white);
+}
+
+.figma-image-upload-text .figma-text-small {
+  color: var(--figma-accent-green);
+  opacity: 0.8;
+}
+
+/* Preview Styles */
+.figma-image-upload-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--figma-gap-sm);
+}
+
+.figma-image-upload-preview-container {
+  position: relative;
+  border-radius: var(--figma-radius-sm);
+  overflow: hidden;
+  background-color: var(--figma-input-bg);
+}
+
+.figma-image-upload-preview-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.figma-image-upload-preview-overlay {
+  position: absolute;
+  top: var(--figma-padding-sm);
+  right: var(--figma-padding-sm);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.figma-image-upload-preview-container:hover .figma-image-upload-preview-overlay {
+  opacity: 1;
+}
+
+.figma-image-upload-remove {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.figma-image-upload-remove .figma-icon {
+  transform: rotate(45deg);
+  color: var(--figma-text-white);
+}
+
+.figma-image-upload-preview-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--figma-padding-xs);
+}
+
+.figma-image-upload-preview-info .figma-text-small {
+  color: var(--figma-accent-green);
+  opacity: 0.8;
+}
 }

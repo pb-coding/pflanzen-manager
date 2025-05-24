@@ -9,6 +9,7 @@ import FigmaInput from '../atoms/FigmaInput';
 import FigmaDropdown from '../atoms/FigmaDropdown';
 import FigmaToggle from '../atoms/FigmaToggle';
 import FigmaButton from '../atoms/FigmaButton';
+import FigmaImageUpload from '../atoms/FigmaImageUpload';
 
 /**
  * FigmaAddPlantScreen - Add plant screen (Design 26-170)
@@ -18,12 +19,14 @@ const FigmaAddPlantScreen: React.FC = () => {
   const navigate = useNavigate();
   const addPlant = useStore(state => state.addPlant);
   const addTask = useStore(state => state.addTask);
+  const addImage = useStore(state => state.addImage);
 
   // Form state
   const [plantName, setPlantName] = useState('');
   const [plantType, setPlantType] = useState('');
   const [wateringFrequency, setWateringFrequency] = useState('');
   const [remindersEnabled, setRemindersEnabled] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Plant type options
@@ -40,6 +43,14 @@ const FigmaAddPlantScreen: React.FC = () => {
 
   const handleBack = () => {
     navigate('/figma/plants');
+  };
+
+  const handleImageSelect = (file: File) => {
+    setSelectedImage(file);
+  };
+
+  const handleImageRemove = () => {
+    setSelectedImage(null);
   };
 
   const parseWateringFrequency = (frequency: string): number => {
@@ -61,6 +72,27 @@ const FigmaAddPlantScreen: React.FC = () => {
         name: plantName.trim(),
         roomId: 'default-room' // Default room for Figma plants
       });
+
+      // Save plant image if selected
+      if (selectedImage && plantId) {
+        // Convert File to base64 dataURL
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const dataURL = event.target?.result as string;
+          if (dataURL) {
+            try {
+              await addImage({
+                plantId,
+                timestamp: Date.now(),
+                dataURL
+              });
+            } catch (error) {
+              console.error('Failed to save plant image:', error);
+            }
+          }
+        };
+        reader.readAsDataURL(selectedImage);
+      }
 
       // Create watering task if frequency is specified
       if (wateringFrequency && plantId) {
@@ -127,6 +159,15 @@ const FigmaAddPlantScreen: React.FC = () => {
               placeholder="e.g., Every 7 days"
               value={wateringFrequency}
               onChange={setWateringFrequency}
+            />
+          </FigmaFormField>
+
+          {/* Plant Photo Field */}
+          <FigmaFormField label="Plant Photo">
+            <FigmaImageUpload
+              onImageSelect={handleImageSelect}
+              selectedImage={selectedImage}
+              onImageRemove={handleImageRemove}
             />
           </FigmaFormField>
 
