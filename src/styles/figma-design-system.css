@@ -1,0 +1,410 @@
+/**
+ * Figma Design System
+ * Based on exact design tokens from Figma Dev Mode
+ * 
+ * Colors, Typography, Spacing, and Components for the
+ * Pflanzen Manager mobile app redesign
+ */
+
+/* ===== FIGMA DESIGN TOKENS ===== */
+
+:root {
+  /* === Colors === */
+  /* Primary Colors from Figma */
+  --figma-bg-dark: #12211A;        /* Main background */
+  --figma-text-white: #FFFFFF;     /* Primary text */
+  --figma-accent-green: #94C7AD;   /* Accent color for watering info */
+  --figma-card-bg: #1A3326;        /* Card/Navigation background */
+  --figma-border: #244736;         /* Borders and dividers */
+  --figma-button-green: #14B866;   /* Action buttons */
+  --figma-input-bg: #244736;       /* Input backgrounds */
+  
+  /* === Typography === */
+  --figma-font-family: 'Lexend', sans-serif;
+  --figma-font-weight-regular: 400;
+  --figma-font-weight-medium: 500;
+  --figma-font-weight-bold: 700;
+  
+  /* Font Sizes from Figma */
+  --figma-text-h1: 18px;           /* Main headers */
+  --figma-text-h2: 22px;           /* Section headers */
+  --figma-text-body: 16px;         /* Body text */
+  --figma-text-small: 14px;        /* Small text */
+  
+  /* Line Heights from Figma */
+  --figma-line-height-tight: 1.28; /* Headers */
+  --figma-line-height-normal: 1.5; /* Body text */
+  
+  /* === Layout === */
+  --figma-container-width: 390px;  /* Mobile container width */
+  --figma-container-height: 800px; /* Mobile container height */
+  
+  /* === Spacing === */
+  --figma-padding-xs: 4px;
+  --figma-padding-sm: 8px;
+  --figma-padding-base: 16px;      /* Base padding from Figma */
+  --figma-padding-lg: 20px;
+  --figma-padding-xl: 24px;
+  
+  --figma-gap-xs: 4px;
+  --figma-gap-sm: 8px;
+  --figma-gap-base: 16px;          /* Base gap from Figma */
+  --figma-gap-lg: 20px;
+  
+  /* === Border Radius === */
+  --figma-radius-sm: 12px;         /* Cards, inputs */
+  --figma-radius-lg: 16px;         /* Navigation items */
+  --figma-radius-xl: 24px;         /* Container */
+  
+  /* === Shadows === */
+  --figma-shadow-toggle: 0px 3px 8px 0px rgba(0, 0, 0, 0.15);
+  
+  /* === Component Sizes === */
+  --figma-header-height: 48px;
+  --figma-nav-height: 52px;        /* 32px content + 20px bottom */
+  --figma-button-height: 48px;
+  --figma-input-height: 56px;
+  --figma-plant-image-size: 70px;
+  --figma-icon-size: 24px;
+}
+
+/* ===== BASE STYLES ===== */
+
+.figma-container {
+  width: var(--figma-container-width);
+  max-width: 100vw;
+  background-color: var(--figma-bg-dark);
+  color: var(--figma-text-white);
+  font-family: var(--figma-font-family);
+  font-weight: var(--figma-font-weight-regular);
+  overflow: hidden;
+  position: relative;
+}
+
+.figma-screen {
+  min-height: var(--figma-container-height);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--figma-bg-dark);
+}
+
+/* ===== TYPOGRAPHY ===== */
+
+.figma-text-h1 {
+  font-size: var(--figma-text-h1);
+  font-weight: var(--figma-font-weight-bold);
+  line-height: var(--figma-line-height-tight);
+  color: var(--figma-text-white);
+  margin: 0;
+}
+
+.figma-text-h2 {
+  font-size: var(--figma-text-h2);
+  font-weight: var(--figma-font-weight-bold);
+  line-height: var(--figma-line-height-tight);
+  color: var(--figma-text-white);
+  margin: 0;
+}
+
+.figma-text-body {
+  font-size: var(--figma-text-body);
+  font-weight: var(--figma-font-weight-regular);
+  line-height: var(--figma-line-height-normal);
+  color: var(--figma-text-white);
+  margin: 0;
+}
+
+.figma-text-body-medium {
+  font-size: var(--figma-text-body);
+  font-weight: var(--figma-font-weight-medium);
+  line-height: var(--figma-line-height-normal);
+  color: var(--figma-text-white);
+  margin: 0;
+}
+
+.figma-text-small {
+  font-size: var(--figma-text-small);
+  font-weight: var(--figma-font-weight-regular);
+  line-height: var(--figma-line-height-normal);
+  color: var(--figma-text-white);
+  margin: 0;
+}
+
+.figma-text-accent {
+  color: var(--figma-accent-green);
+}
+
+/* ===== LAYOUT COMPONENTS ===== */
+
+.figma-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--figma-padding-base) var(--figma-padding-base) var(--figma-padding-sm) var(--figma-padding-base);
+  min-height: var(--figma-header-height);
+}
+
+.figma-header-title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-left: var(--figma-header-height); /* Offset for action button */
+}
+
+.figma-header-action {
+  width: var(--figma-header-height);
+  height: var(--figma-header-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.figma-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.figma-bottom-nav {
+  background-color: var(--figma-card-bg);
+  border-top: 1px solid var(--figma-border);
+  padding: var(--figma-padding-sm) var(--figma-padding-base) var(--figma-padding-lg) var(--figma-padding-base);
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: var(--figma-gap-sm);
+  min-height: var(--figma-nav-height);
+}
+
+.figma-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--figma-gap-xs);
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--figma-accent-green);
+}
+
+.figma-nav-item.active {
+  color: var(--figma-text-white);
+}
+
+.figma-nav-icon {
+  width: var(--figma-icon-size);
+  height: var(--figma-icon-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== BUTTONS ===== */
+
+.figma-button {
+  font-family: var(--figma-font-family);
+  font-weight: var(--figma-font-weight-bold);
+  border: none;
+  border-radius: var(--figma-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--figma-gap-sm);
+  transition: opacity 0.2s ease;
+}
+
+.figma-button:hover {
+  opacity: 0.9;
+}
+
+.figma-button:active {
+  opacity: 0.8;
+}
+
+.figma-button-primary {
+  background-color: var(--figma-button-green);
+  color: var(--figma-bg-dark);
+  font-size: var(--figma-text-body);
+  height: var(--figma-button-height);
+  padding: 0 var(--figma-padding-xl);
+}
+
+.figma-button-icon {
+  background: none;
+  color: var(--figma-text-white);
+  padding: var(--figma-padding-sm);
+  width: var(--figma-header-height);
+  height: var(--figma-header-height);
+  border-radius: var(--figma-radius-sm);
+}
+
+/* ===== CARDS ===== */
+
+.figma-card {
+  background-color: transparent;
+  border-radius: var(--figma-radius-sm);
+  padding: var(--figma-padding-base);
+}
+
+.figma-plant-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--figma-gap-base);
+  padding: var(--figma-padding-base);
+}
+
+.figma-plant-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--figma-gap-xs);
+}
+
+.figma-plant-image {
+  width: var(--figma-plant-image-size);
+  height: var(--figma-plant-image-size);
+  border-radius: var(--figma-radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ===== FORMS ===== */
+
+.figma-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--figma-gap-sm);
+  padding: var(--figma-padding-sm) var(--figma-padding-base);
+}
+
+.figma-label {
+  font-size: var(--figma-text-body);
+  font-weight: var(--figma-font-weight-medium);
+  color: var(--figma-text-white);
+}
+
+.figma-input {
+  background-color: var(--figma-input-bg);
+  border: none;
+  border-radius: var(--figma-radius-sm);
+  color: var(--figma-text-white);
+  font-family: var(--figma-font-family);
+  font-size: var(--figma-text-body);
+  height: var(--figma-input-height);
+  padding: 0 var(--figma-padding-base);
+}
+
+.figma-input::placeholder {
+  color: var(--figma-accent-green);
+  opacity: 1;
+}
+
+.figma-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--figma-accent-green);
+}
+
+/* ===== TOGGLES ===== */
+
+.figma-toggle {
+  width: 51px;
+  height: 31px;
+  background-color: var(--figma-input-bg);
+  border-radius: 15.5px;
+  position: relative;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.figma-toggle-handle {
+  width: 27px;
+  height: 27px;
+  background-color: var(--figma-text-white);
+  border-radius: 13.5px;
+  box-shadow: var(--figma-shadow-toggle);
+  transition: transform 0.2s ease;
+}
+
+.figma-toggle.active .figma-toggle-handle {
+  transform: translateX(20px);
+}
+
+/* ===== UTILITIES ===== */
+
+.figma-flex {
+  display: flex;
+}
+
+.figma-flex-col {
+  flex-direction: column;
+}
+
+.figma-items-center {
+  align-items: center;
+}
+
+.figma-justify-center {
+  justify-content: center;
+}
+
+.figma-justify-between {
+  justify-content: space-between;
+}
+
+.figma-gap-sm {
+  gap: var(--figma-gap-sm);
+}
+
+.figma-gap-base {
+  gap: var(--figma-gap-base);
+}
+
+.figma-p-base {
+  padding: var(--figma-padding-base);
+}
+
+.figma-px-base {
+  padding-left: var(--figma-padding-base);
+  padding-right: var(--figma-padding-base);
+}
+
+.figma-py-base {
+  padding-top: var(--figma-padding-base);
+  padding-bottom: var(--figma-padding-base);
+}
+
+.figma-mb-base {
+  margin-bottom: var(--figma-padding-base);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 390px) {
+  .figma-container {
+    width: 100vw;
+  }
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+
+.figma-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.figma-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.figma-content::-webkit-scrollbar-thumb {
+  background: var(--figma-accent-green);
+  border-radius: 2px;
+}
+
+.figma-content::-webkit-scrollbar-thumb:hover {
+  background: var(--figma-text-white);
+}

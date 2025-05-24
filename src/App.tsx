@@ -5,6 +5,7 @@ import RoomDetail from './components/RoomDetail';
 import PlantDetail from './components/PlantDetail';
 import PlantCemetery from './components/PlantCemetery';
 import FigmaDesignTest from './components/FigmaDesignTest';
+import FigmaPlantListScreen from './components/figma/screens/FigmaPlantListScreen';
 
 const App: React.FC = () => (
   <div className="min-h-screen bg-gray-100">
@@ -15,6 +16,9 @@ const App: React.FC = () => (
         <Route path="/rooms/:roomId/plants/:plantId" element={<PlantDetail />} />
         <Route path="/cemetery" element={<PlantCemetery />} />
         <Route path="/figma-test" element={<FigmaDesignTest />} />
+        
+        {/* Figma Design Implementation Routes */}
+        <Route path="/figma/plants" element={<FigmaPlantListScreen />} />
       </Routes>
     </BrowserRouter>
   </div>
