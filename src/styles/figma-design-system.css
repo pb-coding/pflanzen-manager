@@ -270,7 +270,7 @@
   gap: var(--figma-gap-xs);
 }
 
-.figma-plant-image {
+.figma-plant-card-image {
   width: var(--figma-plant-image-size);
   height: var(--figma-plant-image-size);
   border-radius: var(--figma-radius-sm);

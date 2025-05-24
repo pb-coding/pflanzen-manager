@@ -49,7 +49,7 @@ const FigmaPlantCard: React.FC<FigmaPlantCardProps> = ({
         <img
           src={imageUrl}
           alt={name}
-          className="figma-plant-image"
+          className="figma-plant-card-image"
         />
       )}
     </div>
