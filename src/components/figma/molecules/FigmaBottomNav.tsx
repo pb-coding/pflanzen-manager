@@ -23,15 +23,16 @@ const FigmaBottomNav: React.FC<FigmaBottomNavProps> = ({
   return (
     <div className={`figma-bottom-nav ${className}`}>
       {items.map((item, index) => (
-        <button
-          key={index}
-          className={`figma-nav-item ${item.active ? 'active' : ''}`}
-          onClick={item.onClick}
-        >
-          <div className="figma-nav-icon">
-            <FigmaIcon name={item.icon} />
+        <div key={index} className={`figma-nav-item ${item.active ? 'active' : ''}`}>
+          <div
+            className="figma-nav-button"
+            onClick={item.onClick}
+          >
+            <div className="figma-nav-icon">
+              <FigmaIcon name={item.icon} />
+            </div>
           </div>
-        </button>
+        </div>
       ))}
     </div>
   );

@@ -20,11 +20,7 @@ const FigmaScreen: React.FC<FigmaScreenProps> = ({
   return (
     <div className={`figma-screen ${className}`}>
       {/* Header */}
-      {header && (
-        <div className="figma-header">
-          {header}
-        </div>
-      )}
+      {header && header}
       
       {/* Main Content */}
       <div className="figma-content">
@@ -32,11 +28,7 @@ const FigmaScreen: React.FC<FigmaScreenProps> = ({
       </div>
       
       {/* Bottom Navigation */}
-      {bottomNav && (
-        <div className="figma-bottom-nav">
-          {bottomNav}
-        </div>
-      )}
+      {bottomNav && bottomNav}
     </div>
   );
 };
