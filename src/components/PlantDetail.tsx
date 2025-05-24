@@ -35,6 +35,7 @@ const PlantDetail: React.FC = () => {
   const [isApiKeyDialogOpen, setIsApiKeyDialogOpen] = useState(false);
   const [tempApiKey, setTempApiKey] = useState<string>('');
   const [pendingImageData, setPendingImageData] = useState<string | null>(null);
+  const [activeTaskTab, setActiveTaskTab] = useState<'pending' | 'done' | 'all'>('pending');
 
   useEffect(() => {
     loadRooms();
@@ -543,38 +544,88 @@ const PlantDetail: React.FC = () => {
             {/* Filter tabs for tasks */}
             <div className="flex mb-4 border-b" style={{ borderColor: 'var(--color-beige)' }}>
               <button 
-                className="px-4 py-2 font-medium border-b-2 -mb-px"
+                className={`px-4 py-2 font-medium ${activeTaskTab === 'pending' ? 'border-b-2 -mb-px' : 'opacity-70'}`}
                 style={{ 
-                  borderColor: 'var(--color-green-primary)',
-                  color: 'var(--color-green-primary)'
+                  borderColor: activeTaskTab === 'pending' ? 'var(--color-green-primary)' : 'transparent',
+                  color: activeTaskTab === 'pending' ? 'var(--color-green-primary)' : 'inherit'
                 }}
+                onClick={() => setActiveTaskTab('pending')}
               >
                 Anstehend
               </button>
               <button 
-                className="px-4 py-2 font-medium opacity-70"
-                style={{ borderColor: 'transparent' }}
+                className={`px-4 py-2 font-medium ${activeTaskTab === 'done' ? 'border-b-2 -mb-px' : 'opacity-70'}`}
+                style={{ 
+                  borderColor: activeTaskTab === 'done' ? 'var(--color-green-primary)' : 'transparent',
+                  color: activeTaskTab === 'done' ? 'var(--color-green-primary)' : 'inherit'
+                }}
+                onClick={() => setActiveTaskTab('done')}
               >
                 Erledigt
               </button>
               <button 
-                className="px-4 py-2 font-medium opacity-70"
-                style={{ borderColor: 'transparent' }}
+                className={`px-4 py-2 font-medium ${activeTaskTab === 'all' ? 'border-b-2 -mb-px' : 'opacity-70'}`}
+                style={{ 
+                  borderColor: activeTaskTab === 'all' ? 'var(--color-green-primary)' : 'transparent',
+                  color: activeTaskTab === 'all' ? 'var(--color-green-primary)' : 'inherit'
+                }}
+                onClick={() => setActiveTaskTab('all')}
               >
                 Alle
               </button>
             </div>
             
             <ul className="task-list">
-              {plantTasks.filter(t => !t.done).map(task => (
+              {plantTasks
+                .filter(t => {
+                  if (activeTaskTab === 'pending') return !t.done;
+                  if (activeTaskTab === 'done') return t.done;
+                  return true; // 'all' tab
+                })
+                .map(task => (
                 <li key={task.id} className="task-item mb-3 pb-3 border-b" style={{ borderColor: 'var(--color-beige)' }}>
                   <div className="flex items-start">
-                    <input
-                      type="checkbox"
-                      checked={task.done}
-                      onChange={() => handleTaskToggle(task.id, task.done)}
-                      className="checkbox-leaf mt-1"
-                    />
+                    <div 
+                      className="flex-shrink-0 mr-2 cursor-pointer" 
+                      onClick={() => handleTaskToggle(task.id, task.done)}
+                      style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          borderRadius: '4px',
+                          border: task.done ? 'none' : '2px solid var(--color-green-primary)',
+                          backgroundColor: task.done ? 'var(--color-green-primary)' : 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {task.done && (
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="14" 
+                            height="14" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="white" 
+                            strokeWidth="3" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
                     <div className="ml-3 flex-grow">
                       <div className="flex justify-between items-start">
                         <p className="font-medium">{task.type}</p>
