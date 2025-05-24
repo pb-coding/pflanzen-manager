@@ -18,9 +18,9 @@ const PlantCard: React.FC<PlantCardProps> = ({
       {/* Left side - Plant info */}
       <div className="flex flex-col gap-1 w-[228px]">
         {/* Last watered - top */}
-        <p 
+        <p
           className="text-sm leading-[1.5]"
-          style={{ 
+          style={{
             fontFamily: 'Lexend, sans-serif',
             fontWeight: 400,
             color: '#94C7AD'
@@ -30,9 +30,9 @@ const PlantCard: React.FC<PlantCardProps> = ({
         </p>
         
         {/* Plant name - middle, most prominent */}
-        <h3 
+        <h3
           className="text-base leading-[1.25]"
-          style={{ 
+          style={{
             fontFamily: 'Lexend, sans-serif',
             fontWeight: 700,
             color: '#FFFFFF'
@@ -42,9 +42,9 @@ const PlantCard: React.FC<PlantCardProps> = ({
         </h3>
         
         {/* Watering status - bottom */}
-        <p 
+        <p
           className="text-sm leading-[1.5]"
-          style={{ 
+          style={{
             fontFamily: 'Lexend, sans-serif',
             fontWeight: 400,
             color: '#94C7AD'
@@ -55,7 +55,7 @@ const PlantCard: React.FC<PlantCardProps> = ({
       </div>
       
       {/* Right side - Plant image */}
-      <div 
+      <div
         className="rounded-xl bg-cover bg-center flex-shrink-0"
         style={{
           backgroundImage: `url(${imageUrl})`,

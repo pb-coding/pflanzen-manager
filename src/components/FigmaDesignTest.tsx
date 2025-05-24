@@ -100,17 +100,12 @@ const FigmaDesignTest: React.FC = () => {
               className="flex flex-col"
               style={{ padding: '16px' }}
             >
-              <div
-                className="flex justify-between rounded-xl"
-                style={{ gap: '16px' }}
-              >
-                <PlantCard
-                  name={plant.name}
-                  wateringStatus={plant.wateringStatus}
-                  lastWatered={plant.lastWatered}
-                  imageUrl={plant.imageUrl}
-                />
-              </div>
+              <PlantCard
+                name={plant.name}
+                wateringStatus={plant.wateringStatus}
+                lastWatered={plant.lastWatered}
+                imageUrl={plant.imageUrl}
+              />
             </div>
           ))}
         </div>
