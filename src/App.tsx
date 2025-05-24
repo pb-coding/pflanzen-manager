@@ -6,6 +6,8 @@ import PlantDetail from './components/PlantDetail';
 import PlantCemetery from './components/PlantCemetery';
 import FigmaDesignTest from './components/FigmaDesignTest';
 import FigmaPlantListScreen from './components/figma/screens/FigmaPlantListScreen';
+import FigmaPlantDetailScreen from './components/figma/screens/FigmaPlantDetailScreen';
+import FigmaAddPlantScreen from './components/figma/screens/FigmaAddPlantScreen';
 
 const App: React.FC = () => (
   <div className="min-h-screen bg-gray-100">
@@ -19,6 +21,8 @@ const App: React.FC = () => (
         
         {/* Figma Design Implementation Routes */}
         <Route path="/figma/plants" element={<FigmaPlantListScreen />} />
+        <Route path="/figma/plants/:id" element={<FigmaPlantDetailScreen />} />
+        <Route path="/figma/add-plant" element={<FigmaAddPlantScreen />} />
       </Routes>
     </BrowserRouter>
   </div>

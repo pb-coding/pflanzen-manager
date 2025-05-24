@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface FigmaIconProps {
-  name: 'plus' | 'home' | 'plant' | 'settings' | 'back';
+  name: 'plus' | 'home' | 'plant' | 'settings' | 'back' | 'chevron-down';
   size?: number;
   color?: string;
   className?: string;
@@ -70,11 +70,20 @@ const FigmaIcon: React.FC<FigmaIconProps> = ({
       </>
     ),
     back: (
-      <path 
-        d="M19 12H5M12 19l-7-7 7-7" 
-        stroke={color} 
-        strokeWidth="2" 
-        strokeLinecap="round" 
+      <path
+        d="M19 12H5M12 19l-7-7 7-7"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ),
+    'chevron-down': (
+      <path
+        d="M6 9L12 15L18 9"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
     )

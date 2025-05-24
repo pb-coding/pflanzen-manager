@@ -413,3 +413,414 @@
 .figma-content::-webkit-scrollbar-thumb:hover {
   background: var(--figma-text-white);
 }
+/* ===== WATERING SCHEDULE ===== */
+
+.figma-watering-schedule {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-watering-schedule-header {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 20px 16px 12px;
+  height: 60px;
+}
+
+.figma-watering-schedule-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+  padding: 8px 16px;
+}
+
+.figma-watering-schedule-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.figma-watering-schedule-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.figma-watering-schedule-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-watering-schedule-frequency {
+  display: flex;
+  flex-direction: column;
+  width: 113px;
+}
+
+.figma-watering-schedule-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.figma-watering-schedule-status {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-text-accent {
+  color: var(--figma-accent-green);
+}
+/* ===== WATERING HISTORY ===== */
+
+.figma-watering-history {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-watering-history-header {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 20px 16px 12px;
+}
+
+.figma-watering-history-content {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-watering-history-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+  color: var(--figma-accent-green);
+}
+
+.figma-watering-history-entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+  padding: 0px 16px;
+  height: 48px;
+}
+
+.figma-watering-history-entry-left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.figma-watering-history-entry-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.figma-watering-history-entry-date {
+  display: flex;
+  flex-direction: column;
+}
+/* ===== PLANT IMAGE ===== */
+
+.figma-plant-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  align-self: stretch;
+  padding: 16px;
+}
+
+.figma-plant-image-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 4px;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  height: 537px;
+  background-color: var(--figma-card-bg);
+}
+
+.figma-plant-image-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.figma-plant-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 16px;
+  color: var(--figma-accent-green);
+}
+
+.figma-plant-image-placeholder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  opacity: 0.6;
+}
+/* ===== NOTES SECTION ===== */
+
+.figma-notes-section {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-notes-section-header {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 20px 16px 12px;
+}
+
+.figma-notes-section-content {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 4px 16px 12px;
+}
+/* ===== PLANT DETAIL SCREEN ===== */
+
+.figma-plant-detail {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-plant-detail-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-self: stretch;
+  padding: 0px 20px 20px;
+}
+
+.figma-water-now-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 16px;
+  padding: 0px 24px 0px 16px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: var(--figma-button-green);
+  color: var(--figma-bg-dark);
+  font-weight: var(--figma-font-weight-bold);
+  min-width: 120px;
+}
+
+.figma-water-now-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.figma-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 16px;
+  color: var(--figma-accent-green);
+}
+/* ===== FORM COMPONENTS ===== */
+
+.figma-form-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  align-self: stretch;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 16px;
+}
+
+.figma-form-field-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.figma-form-field-label {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 0px 0px 8px;
+}
+
+.figma-form-field-input {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+/* ===== DROPDOWN ===== */
+
+.figma-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.figma-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  padding: 16px;
+  background-color: var(--figma-input-bg);
+  border-radius: 12px;
+  cursor: pointer;
+  height: 56px;
+}
+
+.figma-dropdown-placeholder {
+  color: var(--figma-accent-green);
+}
+
+.figma-dropdown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--figma-accent-green);
+}
+
+.figma-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--figma-input-bg);
+  border-radius: 12px;
+  margin-top: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.figma-dropdown-option {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.figma-dropdown-option:hover {
+  background-color: var(--figma-border);
+}
+
+.figma-dropdown-option:first-child {
+  border-radius: 12px 12px 0 0;
+}
+
+.figma-dropdown-option:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+/* ===== ADD PLANT SCREEN ===== */
+
+.figma-add-plant {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.figma-add-plant-reminders {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+  padding: 8px 16px;
+}
+
+.figma-add-plant-reminders-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.figma-add-plant-reminders-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 291px;
+}
+
+.figma-add-plant-reminders-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-add-plant-reminders-description {
+  display: flex;
+  flex-direction: column;
+  color: var(--figma-accent-green);
+}
+
+.figma-add-plant-reminders-toggle {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-add-plant-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  align-self: stretch;
+  padding: 12px 16px;
+}
+
+.figma-add-plant-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--figma-button-green);
+  color: var(--figma-bg-dark);
+  font-weight: var(--figma-font-weight-bold);
+}
+
+.figma-add-plant-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

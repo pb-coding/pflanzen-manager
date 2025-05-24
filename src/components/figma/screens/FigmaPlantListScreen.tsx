@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../../store/useStore';
 import { WaterManagementService } from '../../../services/waterManagement';
 import FigmaLayout from '../templates/FigmaLayout';
@@ -12,6 +13,8 @@ import FigmaPlantList from '../organisms/FigmaPlantList';
  * Now using real data from the store with Water Management Service
  */
 const FigmaPlantListScreen: React.FC = () => {
+  const navigate = useNavigate();
+  
   // Store data
   const plants = useStore(state => state.plants);
   const tasks = useStore(state => state.tasks);
@@ -35,13 +38,11 @@ const FigmaPlantListScreen: React.FC = () => {
   );
 
   const handleAddPlant = () => {
-    console.log('Add plant clicked');
-    // TODO: Navigate to add plant screen
+    navigate('/figma/add-plant');
   };
 
   const handlePlantClick = (plantId: string) => {
-    console.log('Plant clicked:', plantId);
-    // TODO: Navigate to plant detail screen
+    navigate(`/figma/plants/${plantId}`);
   };
 
   const handleNavigation = (section: string) => {

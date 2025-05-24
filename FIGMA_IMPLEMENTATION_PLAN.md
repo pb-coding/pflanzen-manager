@@ -286,11 +286,58 @@ class WaterManagementService {
 
 ## 📝 Nächste Schritte
 
-**Aktueller Status**: Plan erstellt ✅
-**Nächster Schritt**: Phase 1, Schritt 1 - Design System Setup
+**Aktueller Status**: Phase 3 abgeschlossen ✅ - Plant List Screen mit echten Daten funktionsfähig
+**Nächster Schritt**: Phase 4, Schritt 10 - Plant Detail Screen Components
+
+### **Phase 4 Implementierungsdetails (basierend auf Figma Design 27-2):**
+
+#### **Schritt 10.1: FigmaWateringSchedule.tsx**
+```typescript
+// Komponente für Bewässerungsplan-Sektion
+// - "Next watering" Label
+// - "Every X days" Frequenz (grüne Farbe #94C7AD)
+// - "In X days" Status
+// Props: nextWatering, frequency, daysUntil
+```
+
+#### **Schritt 10.2: FigmaWateringHistory.tsx**
+```typescript
+// Komponente für Bewässerungshistorie
+// - Liste von Bewässerungseinträgen
+// - "Watered" + Datum Format
+// Props: wateringEntries[]
+```
+
+#### **Schritt 10.3: FigmaPlantImage.tsx**
+```typescript
+// Große Pflanzenbildanzeige
+// - 537px Höhe, 12px border-radius
+// - Placeholder handling
+// Props: imageUrl, plantName
+```
+
+#### **Schritt 11: FigmaPlantDetailScreen.tsx**
+```typescript
+// Komplette Detailansicht Assembly
+// - Header mit Back Button + Plant Name
+// - Plant Image Section
+// - Watering Schedule Section
+// - Notes Section
+// - Watering History Section
+// - Green "Water Now" Button
+// - URL Parameter für Plant ID
+```
+
+#### **Schritt 12: Navigation & Actions**
+```typescript
+// Navigation zwischen Screens
+// - Plant List → Plant Detail (mit ID)
+// - Back Button → Plant List
+// - "Water Now" Action → Add Watering Entry
+```
 
 ---
 
-*Letzte Aktualisierung: 24.05.2025*
+*Letzte Aktualisierung: 25.05.2025*
 *Geschätzte Gesamtzeit: 8-12 Stunden*
 *Priorität: Hoch - Proof of Concept für neue UI*
