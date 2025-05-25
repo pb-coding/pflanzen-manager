@@ -54,8 +54,10 @@ const FigmaPlantListScreen: React.FC = () => {
   const header = (
     <FigmaHeader
       title="My Plants"
-      onActionClick={handleAddPlant}
-      actionIcon="plus"
+      rightAction={{
+        icon: 'plus',
+        onClick: handleAddPlant
+      }}
     />
   );
 

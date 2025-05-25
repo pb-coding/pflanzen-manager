@@ -123,8 +123,10 @@ const FigmaPlantDetailScreen: React.FC = () => {
   const header = (
     <FigmaHeader
       title={plantView.name}
-      actionIcon="back"
-      onActionClick={handleBack}
+      leftAction={{
+        icon: 'back',
+        onClick: handleBack
+      }}
     />
   );
 

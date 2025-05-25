@@ -125,8 +125,10 @@ const FigmaAddPlantScreen: React.FC = () => {
   const header = (
     <FigmaHeader
       title="Add Plant"
-      actionIcon="back"
-      onActionClick={handleBack}
+      leftAction={{
+        icon: 'back',
+        onClick: handleBack
+      }}
     />
   );
 

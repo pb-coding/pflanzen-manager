@@ -142,18 +142,29 @@
 /* ===== LAYOUT COMPONENTS ===== */
 
 .figma-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: var(--figma-header-height) 1fr var(--figma-header-height);
   align-items: center;
   padding: var(--figma-padding-base) var(--figma-padding-base) var(--figma-padding-sm) var(--figma-padding-base);
   min-height: var(--figma-header-height);
 }
 
+.figma-header-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .figma-header-title {
-  flex: 1;
   display: flex;
   justify-content: center;
-  padding-right: var(--figma-header-height); /* Offset for action button on left */
+  align-items: center;
+}
+
+.figma-header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .figma-header-action {
