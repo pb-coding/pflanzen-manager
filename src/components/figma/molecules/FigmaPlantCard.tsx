@@ -23,33 +23,24 @@ const FigmaPlantCard: React.FC<FigmaPlantCardProps> = ({
 }) => {
   return (
     <div
-      className={`
-        flex justify-between items-center gap-4 p-4
-        md:flex-col md:text-center md:p-6
-        lg:hover:bg-figma-card-bg/30 lg:transition-all lg:duration-200
-        cursor-pointer rounded-lg md:rounded-xl
-        border-b border-figma-border md:border md:border-figma-border
-        ${onClick ? 'cursor-pointer' : ''} ${className}
-      `}
+      className={`figma-plant-card ${onClick ? 'cursor-pointer' : ''} ${className}`}
       onClick={onClick}
+      style={{ borderBottom: '1px solid var(--figma-border)' }}
     >
       {/* Plant Info */}
-      <div className="flex-1 md:order-2 space-y-1">
+      <div className="figma-plant-info">
         {/* Last watered */}
-        <p className="text-sm text-figma-accent-green">
+        <p className="figma-text-small figma-text-accent">
           {lastWatered}
         </p>
         
         {/* Plant name */}
-        <h3 className="
-          text-base font-bold text-figma-text-white
-          md:text-lg lg:text-xl
-        ">
+        <h3 className="figma-text-body-medium">
           {name}
         </h3>
         
         {/* Watering status */}
-        <p className="text-sm text-figma-accent-green md:text-base">
+        <p className="figma-text-small figma-text-accent">
           {wateringStatus}
         </p>
       </div>
@@ -59,11 +50,7 @@ const FigmaPlantCard: React.FC<FigmaPlantCardProps> = ({
         <img
           src={imageUrl}
           alt={name}
-          className="
-            w-[70px] h-[70px] rounded-xl object-cover flex-shrink-0
-            md:w-24 md:h-24 md:order-1 md:mb-4
-            lg:w-32 lg:h-32 lg:rounded-2xl
-          "
+          className="figma-plant-card-image"
         />
       )}
     </div>
