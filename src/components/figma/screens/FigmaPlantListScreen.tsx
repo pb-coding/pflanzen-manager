@@ -65,9 +65,9 @@ const FigmaPlantListScreen: React.FC = () => {
   const bottomNav = (
     <FigmaBottomNav
       items={[
-        { icon: 'home', label: 'Home', active: true, onClick: () => handleNavigation('home') },
-        { icon: 'plant', label: 'Plants', active: false, onClick: () => handleNavigation('plants') },
-        { icon: 'settings', label: 'Settings', active: false, onClick: () => handleNavigation('settings') }
+        { icon: 'home', active: true, onClick: () => handleNavigation('home') },
+        { icon: 'plant', active: false, onClick: () => handleNavigation('plants') },
+        { icon: 'settings', active: false, onClick: () => handleNavigation('settings') }
       ]}
     />
   );
