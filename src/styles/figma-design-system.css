@@ -950,10 +950,3 @@
   opacity: 0.8;
 }
 }
-/* ===== PLANT LIST ===== */
-
-.figma-plant-list {
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
-}

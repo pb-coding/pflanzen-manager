@@ -18,7 +18,21 @@ const FigmaPlantList: React.FC<FigmaPlantListProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`figma-plant-list ${className}`}>
+    <div className={`
+      /* Mobile: Single column list */
+      space-y-0 divide-y divide-figma-border
+      
+      /* Tablet: 2-column grid */
+      md:grid md:grid-cols-2 md:gap-4 md:space-y-0 md:divide-y-0 md:p-4
+      
+      /* Desktop: 3-column grid */
+      lg:grid-cols-3 lg:gap-6 lg:p-6
+      
+      /* Large Desktop: 4-column grid */
+      xl:grid-cols-4
+      
+      ${className}
+    `}>
       {plants.map((plant) => (
         <FigmaPlantCard
           key={plant.id}
